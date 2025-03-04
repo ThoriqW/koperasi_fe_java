@@ -1,23 +1,30 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package widget;
 
-package widget; 
+import com.formdev.flatlaf.FlatLightLaf;
+import javax.swing.*;
+import java.awt.*;
 
-import java.awt.Color;
-import javax.swing.JComboBox;
+public class ComboBox extends JComboBox<String> {
 
-/**
- *
- * @author dosen3
- */
-public final class ComboBox extends JComboBox {
+    public ComboBox() {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (UnsupportedLookAndFeelException ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
 
-    public ComboBox(){
-        setFont(new java.awt.Font("Tahoma", 0, 11));
-        setBackground(new Color(255,255,255));
-        setForeground(new Color(50,50,50));
-        setSize(WIDTH,23);
-    } 
+        // Menambahkan item ke ComboBox
+        addItem("Item 1");
+        addItem("Item 2");
+        addItem("Item 3");
+        addItem("Item 4");
+
+        // Mengatur tampilan dan ukuran
+        setPreferredSize(new Dimension(150, 30));
+    }
 }
+

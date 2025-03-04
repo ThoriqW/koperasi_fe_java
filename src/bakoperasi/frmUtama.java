@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.prefs.Preferences;
 import javax.swing.SwingWorker;
 import org.springframework.web.client.HttpClientErrorException;
 import tagihan.Tagihan;
@@ -115,7 +115,7 @@ public class frmUtama extends javax.swing.JFrame {
         panelGlass1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(185, 185, 110)));
         panelGlass1.setOpaqueImage(false);
         panelGlass1.setRound(false);
-        panelGlass1.setWarna(new java.awt.Color(0, 255, 204));
+        panelGlass1.setWarna(new java.awt.Color(153, 255, 204));
         panelGlass1.setLayout(null);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -266,7 +266,7 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         internalFrame1.setPreferredSize(new java.awt.Dimension(40, 42));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
-        internalFrame1.setWarnaBawah(new java.awt.Color(153, 255, 204));
+        internalFrame1.setWarnaBawah(new java.awt.Color(209, 248, 239));
         internalFrame1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 2));
 
         BtnMenu.setMnemonic('M');
@@ -320,7 +320,7 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame4.setBackground(new java.awt.Color(235, 215, 195));
         internalFrame4.setBorder(null);
         internalFrame4.setPreferredSize(new java.awt.Dimension(330, 25));
-        internalFrame4.setWarnaAtas(new java.awt.Color(153, 255, 204));
+        internalFrame4.setWarnaAtas(new java.awt.Color(209, 248, 239));
         internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -422,7 +422,7 @@ public class frmUtama extends javax.swing.JFrame {
     private void btnSimpananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpananActionPerformed
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Simpanan simpanan=new Simpanan();
+        Simpanan simpanan=new Simpanan(null,false);
         simpanan.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
         simpanan.setLocationRelativeTo(PanelUtama);
         simpanan.setVisible(true);
@@ -460,8 +460,18 @@ public class frmUtama extends javax.swing.JFrame {
                     ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, requestEntity, String.class);
 
                     if (response.getStatusCode() == HttpStatus.OK) {
+                        
                         ObjectMapper mapper = new ObjectMapper();
                         JsonNode root = mapper.readTree(response.getBody());
+                        // Ambil token dari response
+                        String token = root.path("data").path("token").asText();
+                        System.out.println("Token: " + token);
+
+                        // Simpan token menggunakan Preferences
+                        Preferences prefs = Preferences.userRoot().node("myApp");
+                        prefs.put("auth_token", token);
+
+                        System.out.println("Token berhasil disimpan!");
                         System.out.println("Login Berhasil: " + root);
 //                      JOptionPane.showMessageDialog(null, root.path("message").asText());
                         BtnMenu.setVisible(true);
@@ -509,7 +519,7 @@ public class frmUtama extends javax.swing.JFrame {
         // TODO add your handling code here:
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Tagihan tagihan=new Tagihan();
+        Tagihan tagihan=new Tagihan(null,false);
         tagihan.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
         tagihan.setLocationRelativeTo(PanelUtama);
         tagihan.setVisible(true);
@@ -627,7 +637,16 @@ public class frmUtama extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(frmUtama.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
          //</editor-fold>
-         
+         try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(frmUtama.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         //</editor-fold>
         
         /* Create and display the form */

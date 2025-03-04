@@ -4,6 +4,7 @@
  */
 package anggota;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fungsi.WarnaTable;
@@ -11,8 +12,10 @@ import fungsi.koneksi;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
-import java.util.Date;
+import java.util.prefs.Preferences;
 import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import org.springframework.http.HttpEntity;
@@ -20,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -40,7 +44,7 @@ public class Anggota extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(885,674);
 
-        Object[] row={"Nama Anggota","Jenis Kelamain","Tempat Lahir","Tanggal Lahir","Unit Kerja"};
+        Object[] row={"Usernama","Nomor Anggota","Nama Lengkap","Unit Kerja","NIK","Email","No. HP","Alamat","Tanggal Lahir","Jenis Kelamin","Agama","NIP","Status","Tanggal Masuk","Tanggal Keluar"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -49,18 +53,26 @@ public class Anggota extends javax.swing.JDialog {
         tbAnggota.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbAnggota.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 15; i++) {
             TableColumn column = tbAnggota.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(100);
-            }else if(i==1){
-                column.setPreferredWidth(100);
-            }else if(i==2){
-                column.setPreferredWidth(100);
-            }else if(i==3){
-                column.setPreferredWidth(100);
-            }else if(i==4){
-                column.setPreferredWidth(100);
+            switch (i) {
+                case 0 -> column.setPreferredWidth(100);
+                case 1 -> column.setPreferredWidth(100);
+                case 2 -> column.setPreferredWidth(100);
+                case 3 -> column.setPreferredWidth(100);
+                case 4 -> column.setPreferredWidth(100);
+                case 5 -> column.setPreferredWidth(100);
+                case 6 -> column.setPreferredWidth(100);
+                case 7 -> column.setPreferredWidth(100);
+                case 8 -> column.setPreferredWidth(100);
+                case 9 -> column.setPreferredWidth(100);
+                case 10 -> column.setPreferredWidth(100);
+                case 11 -> column.setPreferredWidth(100);
+                case 12 -> column.setPreferredWidth(100);
+                case 13 -> column.setPreferredWidth(100);
+                case 14 -> column.setPreferredWidth(100);
+                default -> {
+                }
             }
         }
         tbAnggota.setDefaultRenderer(Object.class, new WarnaTable());
@@ -93,21 +105,18 @@ public class Anggota extends javax.swing.JDialog {
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
         jLabel14 = new widget.Label();
-        cmbCrJk = new widget.ComboBox();
         jLabel6 = new widget.Label();
         TCari = new javax.swing.JTextField();
         BtnCari = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
+        jLabel1 = new widget.Label();
+        jLabel2 = new widget.Label();
+        jLabel3 = new widget.Label();
         jLabel4 = new widget.Label();
-        jLabel8 = new widget.Label();
-        jLabel13 = new widget.Label();
-        DTPLahir = new widget.Tanggal();
-        jLabel5 = new widget.Label();
         TNa = new javax.swing.JTextField();
         TTmp = new javax.swing.JTextField();
         TUk = new javax.swing.JTextField();
-        CmbJk = new widget.ComboBox();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -286,21 +295,6 @@ public class Anggota extends javax.swing.JDialog {
         jLabel14.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass9.add(jLabel14);
 
-        cmbCrJk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "", "LAKI-LAKI", "PEREMPUAN" }));
-        cmbCrJk.setLightWeightPopupEnabled(false);
-        cmbCrJk.setPreferredSize(new java.awt.Dimension(120, 23));
-        cmbCrJk.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbCrJkItemStateChanged(evt);
-            }
-        });
-        cmbCrJk.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbCrJkKeyPressed(evt);
-            }
-        });
-        panelGlass9.add(cmbCrJk);
-
         jLabel6.setText("Key Word :");
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass9.add(jLabel6);
@@ -334,53 +328,27 @@ public class Anggota extends javax.swing.JDialog {
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
         FormInput.setLayout(null);
 
-        jLabel4.setText("Nama Anggota :");
+        jLabel1.setText("Nama Anggota :");
+        FormInput.add(jLabel1);
+        jLabel1.setBounds(10, 10, 95, 23);
+
+        jLabel2.setText("Jenis Kelamin :");
+        FormInput.add(jLabel2);
+        jLabel2.setBounds(10, 40, 95, 23);
+
+        jLabel3.setText("Tmp/Tgl. Lahir :");
+        FormInput.add(jLabel3);
+        jLabel3.setBounds(10, 70, 95, 23);
+
+        jLabel4.setText("Unit Kerja :");
         FormInput.add(jLabel4);
-        jLabel4.setBounds(10, 10, 95, 23);
-
-        jLabel8.setText("Jenis Kelamin :");
-        FormInput.add(jLabel8);
-        jLabel8.setBounds(10, 40, 95, 23);
-
-        jLabel13.setText("Tmp/Tgl. Lahir :");
-        FormInput.add(jLabel13);
-        jLabel13.setBounds(10, 70, 95, 23);
-
-        DTPLahir.setForeground(new java.awt.Color(50, 70, 50));
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-03-2025" }));
-        DTPLahir.setDisplayFormat("dd-MM-yyyy");
-        DTPLahir.setOpaque(false);
-        DTPLahir.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                DTPLahirKeyPressed(evt);
-            }
-        });
-        FormInput.add(DTPLahir);
-        DTPLahir.setBounds(330, 70, 100, 23);
-
-        jLabel5.setText("Unit Kerja :");
-        FormInput.add(jLabel5);
-        jLabel5.setBounds(10, 100, 95, 23);
+        jLabel4.setBounds(10, 100, 95, 23);
         FormInput.add(TNa);
         TNa.setBounds(110, 10, 320, 23);
         FormInput.add(TTmp);
         TTmp.setBounds(110, 70, 210, 23);
         FormInput.add(TUk);
         TUk.setBounds(110, 100, 320, 23);
-
-        CmbJk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
-        CmbJk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CmbJkActionPerformed(evt);
-            }
-        });
-        CmbJk.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                CmbJkKeyPressed(evt);
-            }
-        });
-        FormInput.add(CmbJk);
-        CmbJk.setBounds(110, 40, 140, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -483,7 +451,7 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnPrintKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
-        cmbCrJk.setSelectedIndex(0);
+//        cmbCrJk.setSelectedIndex(0);
         TCari.setText("");
         tampil();
     }//GEN-LAST:event_BtnAllActionPerformed
@@ -504,14 +472,6 @@ public class Anggota extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
-    private void cmbCrJkItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbCrJkItemStateChanged
-        tampil();
-    }//GEN-LAST:event_cmbCrJkItemStateChanged
-
-    private void cmbCrJkKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbCrJkKeyPressed
-
-    }//GEN-LAST:event_cmbCrJkKeyPressed
-
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         tampil();
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -522,21 +482,9 @@ public class Anggota extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_BtnCariKeyPressed
 
-    private void DTPLahirKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DTPLahirKeyPressed
-
-    }//GEN-LAST:event_DTPLahirKeyPressed
-
     private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputActionPerformed
         isForm();
     }//GEN-LAST:event_ChkInputActionPerformed
-
-    private void CmbJkKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CmbJkKeyPressed
-
-    }//GEN-LAST:event_CmbJkKeyPressed
-
-    private void CmbJkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmbJkActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_CmbJkActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
@@ -544,10 +492,10 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowOpened
 
     public void emptTeks() {
-        CmbJk.setSelectedIndex(0);
+//        CmbJk.setSelectedIndex(0);
         TTmp.setText("");
-        DTPLahir.setSelectedIndex(0);
-        DTPLahir.setDate(new Date());
+//        DTPLahir.setSelectedIndex(0);
+//        DTPLahir.setDate(new Date());
     }
     
      private void isForm(){
@@ -568,11 +516,21 @@ public class Anggota extends javax.swing.JDialog {
         try {
             String URL = koneksi.HOST() + "/api/v1/members";
             System.out.println("Request ke: " + URL);
+            
+            // Ambil token dari Preferences
+            Preferences prefs = Preferences.userRoot().node("myApp");
+            String token = prefs.get("auth_token", null);
+
+            if (token == null) {
+                System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                return;
+            }
 
             // Header
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Accept", "application/json");
+            headers.set("Authorization", "Bearer " + token); 
             
             // Request menggunakan RestTemplate
             RestTemplate restTemplate = new RestTemplate();
@@ -586,8 +544,33 @@ public class Anggota extends javax.swing.JDialog {
             tabMode.setRowCount(0); // Hapus data lama
 
             System.out.println(rootNode);
+            
+            JsonNode dataArray = rootNode.path("data");
 
-        } catch (Exception e) {
+            if (dataArray.isArray()) {
+                for (JsonNode member : dataArray) {
+                    String username = member.path("username").asText();
+                    String nomorAnggota = member.path("nomor_anggota").asText();
+                    String namaLengkap = member.path("nama_lengkap").asText();
+                    String unitKerja = member.path("work_unit").asText();
+                    String nik = member.path("nik").asText();
+                    String email = member.path("email").asText();
+                    String phone = member.path("phone").asText();
+                    String alamat = member.path("alamat").asText();
+                    String tanggalLahir = member.path("tanggal_lahir").asText();
+                    String jenisKelamin = member.path("jenis_kelamin").asText();
+                    String agama = member.path("agama").asText();
+                    String nip = member.path("nip").asText();
+                    String status = member.path("status").asText();
+                    String tanggalMasuk = member.path("tanggal_masuk").asText();
+                    String tanggalKeluar = member.path("tanggal_keluar").asText();
+
+                    // Tambahkan data ke tabel
+                    tabMode.addRow(new Object[]{username, nomorAnggota, namaLengkap, unitKerja, nik, email, phone, alamat, tanggalLahir, jenisKelamin, agama, nip, status, tanggalMasuk, tanggalKeluar});
+                }
+            }
+
+        } catch (JsonProcessingException | RestClientException e) {
             System.out.println(e);
         } finally{
         }
@@ -596,44 +579,6 @@ public class Anggota extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Anggota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Anggota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Anggota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Anggota.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                Anggota dialog = new Anggota(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private widget.Button BtnAll;
@@ -645,8 +590,6 @@ public class Anggota extends javax.swing.JDialog {
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
-    private widget.ComboBox CmbJk;
-    private widget.Tanggal DTPLahir;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private javax.swing.JPanel PanelInput;
@@ -655,15 +598,14 @@ public class Anggota extends javax.swing.JDialog {
     private javax.swing.JTextField TNa;
     private javax.swing.JTextField TTmp;
     private javax.swing.JTextField TUk;
-    private widget.ComboBox cmbCrJk;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel1;
     private widget.Label jLabel10;
-    private widget.Label jLabel13;
     private widget.Label jLabel14;
+    private widget.Label jLabel2;
+    private widget.Label jLabel3;
     private widget.Label jLabel4;
-    private widget.Label jLabel5;
     private widget.Label jLabel6;
-    private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
