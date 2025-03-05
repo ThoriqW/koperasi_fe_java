@@ -6,22 +6,21 @@
 package widget;
 
 import java.awt.Color;
-import uz.ncipro.calendar.JDateTimePicker;
+import java.util.Date;
+import org.jdesktop.swingx.JXDatePicker;
 
 /**
  *
  * @author khanzasoft
  */
-public final class Tanggal extends JDateTimePicker {
-    public Tanggal(){
+public final class Tanggal extends JXDatePicker {
+    public Tanggal() {
         super();
-        //setBackground(new Color(245,160,245));
-        //setForeground(new Color(90,90,90));
-        setForeground(new Color(50,50,50));
-        setBackground(new Color(255,255,255));
+        setDate(new Date()); // Set default ke hari ini
+        setFormats("dd/MM/yyyy"); // Format tanggal
+        setForeground(new Color(50, 50, 50));
+        setBackground(new Color(255, 255, 255));
         setFont(new java.awt.Font("Tahoma", 0, 11));
-        //setBorder(javax.swing.BorderFactory.createLineBorder(new Color(212,212,152)));
-        setSize(WIDTH,23);
+        setSize(WIDTH, 23);
     }
-
 }

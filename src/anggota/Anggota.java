@@ -14,8 +14,6 @@ import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.util.prefs.Preferences;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import org.springframework.http.HttpEntity;
@@ -105,6 +103,7 @@ public class Anggota extends javax.swing.JDialog {
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
         jLabel14 = new widget.Label();
+        cmbCrJk = new javax.swing.JComboBox<>();
         jLabel6 = new widget.Label();
         TCari = new javax.swing.JTextField();
         BtnCari = new widget.Button();
@@ -117,6 +116,27 @@ public class Anggota extends javax.swing.JDialog {
         TNa = new javax.swing.JTextField();
         TTmp = new javax.swing.JTextField();
         TUk = new javax.swing.JTextField();
+        CmbJk = new javax.swing.JComboBox<>();
+        TnL = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        TNik = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        TEmail = new javax.swing.JTextField();
+        TNhp = new javax.swing.JTextField();
+        TAlamat = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        TnL1 = new javax.swing.JTextField();
+        TnL2 = new javax.swing.JTextField();
+        jLabel9 = new widget.Label();
+        tanggal1 = new widget.Tanggal();
+        jLabel16 = new widget.Label();
+        tanggal2 = new widget.Tanggal();
+        jLabel17 = new widget.Label();
+        tanggal3 = new widget.Tanggal();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -295,12 +315,24 @@ public class Anggota extends javax.swing.JDialog {
         jLabel14.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass9.add(jLabel14);
 
+        cmbCrJk.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbCrJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
+        cmbCrJk.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbCrJk.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbCrJk.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbCrJk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCrJkActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbCrJk);
+
         jLabel6.setText("Key Word :");
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass9.add(jLabel6);
 
         TCari.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        TCari.setPreferredSize(new java.awt.Dimension(240, 22));
+        TCari.setPreferredSize(new java.awt.Dimension(240, 23));
         panelGlass9.add(TCari);
 
         BtnCari.setMnemonic('2');
@@ -323,6 +355,7 @@ public class Anggota extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         PanelInput.setOpaque(false);
+        PanelInput.setPreferredSize(new java.awt.Dimension(850, 190));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
@@ -332,9 +365,9 @@ public class Anggota extends javax.swing.JDialog {
         FormInput.add(jLabel1);
         jLabel1.setBounds(10, 10, 95, 23);
 
-        jLabel2.setText("Jenis Kelamin :");
+        jLabel2.setText("Tanggal Keluar :");
         FormInput.add(jLabel2);
-        jLabel2.setBounds(10, 40, 95, 23);
+        jLabel2.setBounds(640, 100, 80, 20);
 
         jLabel3.setText("Tmp/Tgl. Lahir :");
         FormInput.add(jLabel3);
@@ -344,11 +377,107 @@ public class Anggota extends javax.swing.JDialog {
         FormInput.add(jLabel4);
         jLabel4.setBounds(10, 100, 95, 23);
         FormInput.add(TNa);
-        TNa.setBounds(110, 10, 320, 23);
+        TNa.setBounds(110, 10, 210, 23);
         FormInput.add(TTmp);
         TTmp.setBounds(110, 70, 210, 23);
         FormInput.add(TUk);
-        TUk.setBounds(110, 100, 320, 23);
+        TUk.setBounds(110, 100, 210, 23);
+
+        CmbJk.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CmbJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
+        CmbJk.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        CmbJk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CmbJkActionPerformed(evt);
+            }
+        });
+        FormInput.add(CmbJk);
+        CmbJk.setBounds(730, 10, 120, 23);
+        FormInput.add(TnL);
+        TnL.setBounds(420, 10, 210, 23);
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel5.setText("NIK :");
+        FormInput.add(jLabel5);
+        jLabel5.setBounds(80, 40, 30, 23);
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel7.setText("No. HP :");
+        FormInput.add(jLabel7);
+        jLabel7.setBounds(370, 40, 50, 23);
+        FormInput.add(TNik);
+        TNik.setBounds(110, 40, 210, 23);
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel8.setText("NIP :");
+        FormInput.add(jLabel8);
+        jLabel8.setBounds(80, 130, 24, 23);
+        FormInput.add(TEmail);
+        TEmail.setBounds(420, 40, 210, 23);
+        FormInput.add(TNhp);
+        TNhp.setBounds(420, 70, 210, 23);
+        FormInput.add(TAlamat);
+        TAlamat.setBounds(420, 100, 210, 23);
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel11.setText("Email :");
+        FormInput.add(jLabel11);
+        jLabel11.setBounds(378, 70, 40, 23);
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel12.setText("Nama Lengkap :");
+        FormInput.add(jLabel12);
+        jLabel12.setBounds(330, 10, 80, 23);
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel13.setText("Alamat :");
+        FormInput.add(jLabel13);
+        jLabel13.setBounds(370, 100, 40, 23);
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel15.setText("Agama :");
+        FormInput.add(jLabel15);
+        jLabel15.setBounds(370, 130, 50, 23);
+
+        TnL1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TnL1ActionPerformed(evt);
+            }
+        });
+        FormInput.add(TnL1);
+        TnL1.setBounds(110, 130, 210, 23);
+
+        TnL2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TnL2ActionPerformed(evt);
+            }
+        });
+        FormInput.add(TnL2);
+        TnL2.setBounds(420, 130, 210, 23);
+
+        jLabel9.setText("Jenis Kelamin :");
+        FormInput.add(jLabel9);
+        jLabel9.setBounds(650, 10, 70, 23);
+
+        tanggal1.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
+        FormInput.add(tanggal1);
+        tanggal1.setBounds(730, 100, 120, 23);
+
+        jLabel16.setText("Tanggal Lahir :");
+        FormInput.add(jLabel16);
+        jLabel16.setBounds(640, 40, 80, 20);
+
+        tanggal2.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
+        FormInput.add(tanggal2);
+        tanggal2.setBounds(730, 40, 120, 23);
+
+        jLabel17.setText("Tanggal Masuk :");
+        FormInput.add(jLabel17);
+        jLabel17.setBounds(640, 70, 80, 20);
+
+        tanggal3.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
+        FormInput.add(tanggal3);
+        tanggal3.setBounds(730, 70, 120, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -451,7 +580,7 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnPrintKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
-//        cmbCrJk.setSelectedIndex(0);
+        cmbCrJk.setSelectedIndex(0);
         TCari.setText("");
         tampil();
     }//GEN-LAST:event_BtnAllActionPerformed
@@ -491,8 +620,24 @@ public class Anggota extends javax.swing.JDialog {
         tampil();
     }//GEN-LAST:event_formWindowOpened
 
+    private void CmbJkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmbJkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CmbJkActionPerformed
+
+    private void cmbCrJkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCrJkActionPerformed
+
+    private void TnL1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TnL1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TnL1ActionPerformed
+
+    private void TnL2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TnL2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TnL2ActionPerformed
+
     public void emptTeks() {
-//        CmbJk.setSelectedIndex(0);
+        CmbJk.setSelectedIndex(0);
         TTmp.setText("");
 //        DTPLahir.setSelectedIndex(0);
 //        DTPLahir.setDate(new Date());
@@ -501,7 +646,7 @@ public class Anggota extends javax.swing.JDialog {
      private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,158));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,190));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -590,25 +735,47 @@ public class Anggota extends javax.swing.JDialog {
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
+    private javax.swing.JComboBox<String> CmbJk;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
+    private javax.swing.JTextField TAlamat;
     private javax.swing.JTextField TCari;
+    private javax.swing.JTextField TEmail;
     private javax.swing.JTextField TNa;
+    private javax.swing.JTextField TNhp;
+    private javax.swing.JTextField TNik;
     private javax.swing.JTextField TTmp;
     private javax.swing.JTextField TUk;
+    private javax.swing.JTextField TnL;
+    private javax.swing.JTextField TnL1;
+    private javax.swing.JTextField TnL2;
+    private javax.swing.JComboBox<String> cmbCrJk;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel1;
     private widget.Label jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private widget.Label jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private widget.Label jLabel16;
+    private widget.Label jLabel17;
     private widget.Label jLabel2;
     private widget.Label jLabel3;
     private widget.Label jLabel4;
+    private javax.swing.JLabel jLabel5;
     private widget.Label jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private widget.Label jLabel9;
     private javax.swing.JPanel jPanel3;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
+    private widget.Tanggal tanggal1;
+    private widget.Tanggal tanggal2;
+    private widget.Tanggal tanggal3;
     private widget.Table tbAnggota;
     // End of variables declaration//GEN-END:variables
 }

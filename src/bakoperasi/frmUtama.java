@@ -32,6 +32,7 @@ import tagihan.Tagihan;
 import anggota.Anggota;
 import java.awt.Window;
 import javax.swing.JDialog;
+import javax.swing.UIManager;
 
 /**
  *
@@ -648,7 +649,7 @@ public class frmUtama extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(frmUtama.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+        UIManager.put("ComboBox.background", new java.awt.Color(255, 255, 255)); 
         /* Create and display the form */
         SwingUtilities.invokeLater(() -> new frmUtama().setVisible(true));
     }
