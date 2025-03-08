@@ -24,13 +24,13 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author dosen
  */
-public final class CariUnitKerja extends javax.swing.JDialog {
+public final class CariUnitKerjaKeyword extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
-    public CariUnitKerja(java.awt.Frame parent, boolean modal) {
+    public CariUnitKerjaKeyword(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocation(10,2);

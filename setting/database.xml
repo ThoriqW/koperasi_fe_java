@@ -2,5 +2,5 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>K</comment> 
-    <entry key="HOST">https://bekoperasi.talion.cloud</entry>
+    <entry key="HOST">http://127.0.0.1:8000</entry>
 </properties>

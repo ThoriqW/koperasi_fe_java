@@ -11,6 +11,7 @@ import fungsi.WarnaTable;
 import fungsi.koneksi;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.util.prefs.Preferences;
@@ -22,12 +23,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import fungsi.validasi;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import unitkerja.CariUnitKerja;
+import unitkerja.CariUnitKerjaKeyword;
 
 /**
  *
@@ -35,8 +44,10 @@ import unitkerja.CariUnitKerja;
  */
 public class Anggota extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
-    private validasi Valid=new validasi();
+    private String idunitkerja;
+    private String keywordidunitkerja = "";
     private CariUnitKerja cariunitkerja=new CariUnitKerja(null,false);
+    private CariUnitKerjaKeyword cariunitkerjakeyword=new CariUnitKerjaKeyword(null,false);
     /**
      * Creates new form Anggota
      * @param parent
@@ -48,8 +59,8 @@ public class Anggota extends javax.swing.JDialog {
 
         this.setLocation(8,1);
         setSize(885,674);
-
-        Object[] row={"Username","Nomor Anggota","Nama Lengkap","Unit Kerja","NIK","Email","No. HP","Alamat","Tanggal Lahir","Jenis Kelamin","Agama","NIP","Status","Tanggal Masuk","Tanggal Keluar"};
+        
+        Object[] row={"ID","Username","Nomor Anggota","Nama Lengkap","ID Work Unit","Unit Kerja","NIK","Email","No. HP","Alamat","Tanggal Lahir","Jenis Kelamin","Agama","NIP","Status","Tanggal Masuk","Tanggal Keluar"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -58,29 +69,87 @@ public class Anggota extends javax.swing.JDialog {
         tbAnggota.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbAnggota.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 16; i++) {
             TableColumn column = tbAnggota.getColumnModel().getColumn(i);
             switch (i) {
-                case 0 -> column.setPreferredWidth(110);
-                case 1 -> column.setPreferredWidth(100);
-                case 2 -> column.setPreferredWidth(150);
+                case 0 -> {
+                    column.setMinWidth(0);
+                    column.setMaxWidth(0);
+                    column.setWidth(0);
+                    column.setPreferredWidth(0);
+                }
+                case 1 -> column.setPreferredWidth(110);
+                case 2 -> column.setPreferredWidth(100);
                 case 3 -> column.setPreferredWidth(150);
-                case 4 -> column.setPreferredWidth(110);
+                case 4 -> {
+                    column.setMinWidth(0);
+                    column.setMaxWidth(0);
+                    column.setWidth(0);
+                    column.setPreferredWidth(0);
+                }
                 case 5 -> column.setPreferredWidth(150);
-                case 6 -> column.setPreferredWidth(100);
-                case 7 -> column.setPreferredWidth(130);
+                case 6 -> column.setPreferredWidth(110);
+                case 7 -> column.setPreferredWidth(150);
                 case 8 -> column.setPreferredWidth(100);
-                case 9 -> column.setPreferredWidth(100);
-                case 10 -> column.setPreferredWidth(80);
-                case 11 -> column.setPreferredWidth(120);
+                case 9 -> column.setPreferredWidth(130);
+                case 10 -> column.setPreferredWidth(100);
+                case 11 -> column.setPreferredWidth(100);
                 case 12 -> column.setPreferredWidth(80);
-                case 13 -> column.setPreferredWidth(100);
-                case 14 -> column.setPreferredWidth(100);
+                case 13 -> column.setPreferredWidth(120);
+                case 14 -> column.setPreferredWidth(80);
+                case 15 -> column.setPreferredWidth(100);
+                case 16 -> column.setPreferredWidth(100);
                 default -> {
                 }
             }
         }
         tbAnggota.setDefaultRenderer(Object.class, new WarnaTable());
+        
+        cariunitkerja.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(cariunitkerja.getTable().getSelectedRow()!= -1){                   
+                    TUk.setText(cariunitkerja.tbUnitKerja.getValueAt(cariunitkerja.tbUnitKerja.getSelectedRow(),1).toString());
+                    idunitkerja = cariunitkerja.tbUnitKerja.getValueAt(cariunitkerja.tbUnitKerja.getSelectedRow(),0).toString();
+                }   
+                TNip.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        cariunitkerjakeyword.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(cariunitkerjakeyword.getTable().getSelectedRow()!= -1){                   
+                    TCariUk.setText(cariunitkerjakeyword.tbUnitKerja.getValueAt(cariunitkerjakeyword.tbUnitKerja.getSelectedRow(),1).toString());
+                    keywordidunitkerja = cariunitkerjakeyword.tbUnitKerja.getValueAt(cariunitkerjakeyword.tbUnitKerja.getSelectedRow(),0).toString();
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
         ChkInput.setSelected(false);
         isForm(); 
     }
@@ -109,8 +178,15 @@ public class Anggota extends javax.swing.JDialog {
         LCount = new widget.Label();
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
+        jLabel16 = new widget.Label();
+        cmbCrJumlahdata = new javax.swing.JComboBox<>();
         jLabel14 = new widget.Label();
         cmbCrJk = new javax.swing.JComboBox<>();
+        jLabel7 = new widget.Label();
+        TCariUk = new javax.swing.JTextField();
+        BtnCariUnitKerjaTable = new widget.Button();
+        jLabel8 = new widget.Label();
+        cmbCrStatus = new javax.swing.JComboBox<>();
         jLabel6 = new widget.Label();
         TCari = new javax.swing.JTextField();
         BtnCari = new widget.Button();
@@ -143,6 +219,8 @@ public class Anggota extends javax.swing.JDialog {
         tanggalMasuk = new widget.Tanggal();
         jAlamat = new javax.swing.JLabel();
         BtnCariUnitKerja = new widget.Button();
+        jStatus = new widget.Label();
+        CmbStatus = new javax.swing.JComboBox<>();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -317,12 +395,28 @@ public class Anggota extends javax.swing.JDialog {
         panelGlass9.setPreferredSize(new java.awt.Dimension(44, 44));
         panelGlass9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 10));
 
+        jLabel16.setText("Jumlah Data :");
+        jLabel16.setPreferredSize(new java.awt.Dimension(85, 23));
+        panelGlass9.add(jLabel16);
+
+        cmbCrJumlahdata.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbCrJumlahdata.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "1000" }));
+        cmbCrJumlahdata.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbCrJumlahdata.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbCrJumlahdata.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbCrJumlahdata.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCrJumlahdataActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbCrJumlahdata);
+
         jLabel14.setText("J.K. :");
         jLabel14.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass9.add(jLabel14);
 
         cmbCrJk.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        cmbCrJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
+        cmbCrJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "  ", "lakilaki", "perempuan" }));
         cmbCrJk.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
         cmbCrJk.setMinimumSize(new java.awt.Dimension(94, 23));
         cmbCrJk.setPreferredSize(new java.awt.Dimension(96, 23));
@@ -332,6 +426,39 @@ public class Anggota extends javax.swing.JDialog {
             }
         });
         panelGlass9.add(cmbCrJk);
+
+        jLabel7.setText("Unit Kerja :");
+        jLabel7.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass9.add(jLabel7);
+
+        TCariUk.setPreferredSize(new java.awt.Dimension(180, 23));
+        panelGlass9.add(TCariUk);
+
+        BtnCariUnitKerjaTable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnCariUnitKerjaTable.setMnemonic('1');
+        BtnCariUnitKerjaTable.setToolTipText("ALt+1");
+        BtnCariUnitKerjaTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCariUnitKerjaTableActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(BtnCariUnitKerjaTable);
+
+        jLabel8.setText("Status :");
+        jLabel8.setPreferredSize(new java.awt.Dimension(50, 23));
+        panelGlass9.add(jLabel8);
+
+        cmbCrStatus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbCrStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Aktif", "Tidak Aktif" }));
+        cmbCrStatus.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbCrStatus.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbCrStatus.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbCrStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCrStatusActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbCrStatus);
 
         jLabel6.setText("Key Word :");
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
@@ -385,7 +512,7 @@ public class Anggota extends javax.swing.JDialog {
         TUk.setBounds(110, 100, 170, 23);
 
         CmbJk.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        CmbJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
+        CmbJk.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "lakilaki", "perempuan" }));
         CmbJk.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
         CmbJk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -428,7 +555,7 @@ public class Anggota extends javax.swing.JDialog {
         jEmail.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jEmail.setText("Email :");
         FormInput.add(jEmail);
-        jEmail.setBounds(348, 40, 31, 23);
+        jEmail.setBounds(348, 40, 40, 23);
 
         jAgama.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jAgama.setText("Agama :");
@@ -491,6 +618,21 @@ public class Anggota extends javax.swing.JDialog {
         FormInput.add(BtnCariUnitKerja);
         BtnCariUnitKerja.setBounds(290, 100, 28, 23);
 
+        jStatus.setText("Status :");
+        FormInput.add(jStatus);
+        jStatus.setBounds(620, 100, 70, 23);
+
+        CmbStatus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktif", "Tidak Aktif" }));
+        CmbStatus.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        CmbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CmbStatusActionPerformed(evt);
+            }
+        });
+        FormInput.add(CmbStatus);
+        CmbStatus.setBounds(700, 100, 120, 23);
+
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -520,8 +662,9 @@ public class Anggota extends javax.swing.JDialog {
     private void tbAnggotaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAnggotaMouseClicked
         if(tabMode.getRowCount()!=0){
             try {
-                //                getData();
+               getData();
             } catch (java.lang.NullPointerException e) {
+                System.out.println(e);
             }
         }
     }//GEN-LAST:event_tbAnggotaMouseClicked
@@ -530,26 +673,26 @@ public class Anggota extends javax.swing.JDialog {
         if(tabMode.getRowCount()!=0){
             if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
                 try {
-                    //                    getData();
+                    getData();
                 } catch (java.lang.NullPointerException e) {
+                    System.out.println(e);
                 }
             }
         }
     }//GEN-LAST:event_tbAnggotaKeyReleased
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-        
-        } catch (HttpClientErrorException e) {
-            String URL = koneksi.HOST() + "/api/v1/users/login";
+            String URL = koneksi.HOST() + "/api/v1/members/register";
             System.out.println("Request ke: " + URL);
-            
-           // Ambil token dari Preferences
+
+            // Ambil token dari Preferences
             Preferences prefs = Preferences.userRoot().node("myApp");
             String token = prefs.get("auth_token", null);
 
             if (token == null) {
-                System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                JOptionPane.showMessageDialog(null, "Token tidak ditemukan! Harap login terlebih dahulu.");
                 return;
             }
 
@@ -558,26 +701,51 @@ public class Anggota extends javax.swing.JDialog {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Accept", "application/json");
             headers.set("Authorization", "Bearer " + token);
-            
+
             // Data Anggota
-            String nomorAnggota = TNa.getText();
-            String namaLengkap = TnL.getText();
-            String nik = TNik.getText();
-            String email = TEmail.getText();
-            String noHp = TNoHp.getText();
-            String alamat = TAlamat.getText();
-            String tanggalLahir = new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalLahir.getDate());
-            String jenisKelamin = CmbJk.getSelectedItem().toString();
-            String agama = TAgama.getText();
-            String tanggalMasuk = new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalMasuk.getDate());
-            String tanggalKeluar = new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalKeluar.getDate());
-            
-            
+            Map<String, Object> requestData = new HashMap<>();
+            requestData.put("nomor_anggota", TNa.getText());
+            requestData.put("nama_lengkap", TnL.getText());
+            requestData.put("nik", TNik.getText());
+            requestData.put("email", TEmail.getText());
+            requestData.put("phone", TNoHp.getText());
+            requestData.put("alamat", TAlamat.getText());
+            requestData.put("tanggal_lahir", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalLahir.getDate()));
+            requestData.put("jenis_kelamin", CmbJk.getSelectedItem().toString());
+            requestData.put("agama", TAgama.getText());
+            requestData.put("nip", TNip.getText());
+            requestData.put("tanggal_masuk", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalMasuk.getDate()));
+            requestData.put("tanggal_keluar", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalKeluar.getDate()));
+            requestData.put("status", CmbStatus.getSelectedItem().toString().equals("Aktif"));
+            requestData.put("work_unit_id", idunitkerja);
+
+            // Konversi Map ke JSON String menggunakan ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+
             // Request menggunakan RestTemplate
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
+            RestTemplate restAnggota = new RestTemplate();
+            HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
+            ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.POST, entity, String.class);
+            
+            // Menangani response
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JOptionPane.showMessageDialog(null, root.path("message").asText());
+                tabMode.setRowCount(0);
+                emptTeks();
+                tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
+            }
+        } catch (HttpClientErrorException e) { 
+            // Menangani error dari API (misalnya 400 Bad Request)
+            System.out.println("Error Response: " + e.getResponseBodyAsString());
+            JOptionPane.showMessageDialog(null, e.getResponseBodyAsString());
+        } catch (JsonProcessingException | HeadlessException | RestClientException e) {
+            System.out.println("Terjadi kesalahan: " + e.getMessage());
         }
+        setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -601,7 +769,51 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(tbAnggota.getSelectedRow() != -1){
+            String idMember = tbAnggota.getValueAt(tbAnggota.getSelectedRow(),0).toString();
+            try {
+                String URL = koneksi.HOST() + "/api/v1/members/" + idMember;
+                System.out.println("Request ke: " + URL);
 
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
+
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+
+                // Header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.set("Accept", "application/json");
+                headers.set("Authorization", "Bearer " + token); 
+
+                // Request menggunakan RestTemplate
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.DELETE, entity, String.class);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    JsonNode root = objectMapper.readTree(response.getBody());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tabMode.setRowCount(0);
+                    tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal hapus data");
+                }
+
+            } catch (JsonProcessingException | RestClientException e) {
+                System.out.println(e);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
+        }
+        setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -611,7 +823,74 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnHapusKeyPressed
 
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(tbAnggota.getSelectedRow() != -1){
+            String idMember = tbAnggota.getValueAt(tbAnggota.getSelectedRow(),0).toString();
+            String selectedUnitKerja = tbAnggota.getValueAt(tbAnggota.getSelectedRow(), 4).toString();
+            if (idunitkerja == null || idunitkerja.equals(selectedUnitKerja)) {
+                idunitkerja = selectedUnitKerja;
+            }
+            try {
+                String URL = koneksi.HOST() + "/api/v1/members/" + idMember;
+                System.out.println("Request ke: " + URL);
 
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
+
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+
+                // Header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.set("Accept", "application/json");
+                headers.set("Authorization", "Bearer " + token); 
+                
+                // Data Anggota
+                Map<String, Object> requestData = new HashMap<>();
+                requestData.put("nomor_anggota", TNa.getText());
+                requestData.put("nama_lengkap", TnL.getText());
+                requestData.put("nik", TNik.getText());
+                requestData.put("email", TEmail.getText());
+                requestData.put("phone", TNoHp.getText());
+                requestData.put("alamat", TAlamat.getText());
+                requestData.put("tanggal_lahir", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalLahir.getDate()));
+                requestData.put("jenis_kelamin", CmbJk.getSelectedItem().toString());
+                requestData.put("agama", TAgama.getText());
+                requestData.put("nip", TNip.getText());
+                requestData.put("tanggal_masuk", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalMasuk.getDate()));
+                requestData.put("tanggal_keluar", new SimpleDateFormat("yyyy-MM-dd").format(this.tanggalKeluar.getDate()));
+                requestData.put("status", CmbStatus.getSelectedItem().toString().equals("Aktif"));
+                requestData.put("work_unit_id", idunitkerja);
+
+                // Konversi Map ke JSON String menggunakan ObjectMapper
+                ObjectMapper objectMapper = new ObjectMapper();
+                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+
+                    // Request menggunakan RestTemplate
+                RestTemplate restAnggota = new RestTemplate();
+                HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
+                ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.PUT, entity, String.class);
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    JsonNode root = objectMapper.readTree(response.getBody());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tabMode.setRowCount(0);
+                    tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal edit data data");
+                }
+
+            } catch (JsonProcessingException | RestClientException e) {
+                System.out.println(e);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
+        }
+        setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnEditActionPerformed
 
     private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
@@ -632,8 +911,11 @@ public class Anggota extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         cmbCrJk.setSelectedIndex(0);
+        cmbCrStatus.setSelectedIndex(0);
         TCari.setText("");
-        tampil();
+        TCariUk.setText("");
+        keywordidunitkerja = "";
+        tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -653,7 +935,11 @@ public class Anggota extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        if(!TCari.getText().trim().equals("")){
+            tampil(TCari.getText().trim(), cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
+        } else {
+            tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
+        }
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -668,7 +954,7 @@ public class Anggota extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        tampil();
+        tampil("", cmbCrJk.getSelectedItem().toString(), cmbCrJumlahdata.getSelectedItem().toString(), keywordidunitkerja, cmbCrStatus.getSelectedItem().toString());
     }//GEN-LAST:event_formWindowOpened
 
     private void CmbJkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmbJkActionPerformed
@@ -695,13 +981,45 @@ public class Anggota extends javax.swing.JDialog {
         cariunitkerja.setVisible(true);
     }//GEN-LAST:event_BtnCariUnitKerjaActionPerformed
 
+    private void CmbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmbStatusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CmbStatusActionPerformed
+
+    private void cmbCrJumlahdataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJumlahdataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCrJumlahdataActionPerformed
+
+    private void BtnCariUnitKerjaTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariUnitKerjaTableActionPerformed
+        // TODO add your handling code here:
+        cariunitkerjakeyword.emptTeks();
+        cariunitkerjakeyword.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        cariunitkerjakeyword.setLocationRelativeTo(internalFrame1);
+        cariunitkerjakeyword.setAlwaysOnTop(false);
+        cariunitkerjakeyword.setVisible(true);
+    }//GEN-LAST:event_BtnCariUnitKerjaTableActionPerformed
+
+    private void cmbCrStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrStatusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCrStatusActionPerformed
+
     public void emptTeks() {
         CmbJk.setSelectedIndex(0);
-//        DTPLahir.setSelectedIndex(0);
-//        DTPLahir.setDate(new Date());
+        CmbStatus.setSelectedIndex(0);
+        TnL.setText("");
+        TNik.setText("");
+        TNa.setText("");
+        TUk.setText("");
+        TNip.setText("");
+        TNoHp.setText("");
+        TEmail.setText("");
+        TAlamat.setText("");
+        TAgama.setText("");
+        tanggalMasuk.setDate(new Date());
+        tanggalKeluar.setDate(new Date());
+        tanggalLahir.setDate(new Date());
     }
     
-     private void isForm(){
+    private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
             PanelInput.setPreferredSize(new Dimension(WIDTH,190));
@@ -715,10 +1033,48 @@ public class Anggota extends javax.swing.JDialog {
         }
     }
      
-    private void tampil() {
+    private void getData() {
+        int row=tbAnggota.getSelectedRow();
+        if(row!= -1){
+            CmbJk.setSelectedItem(tbAnggota.getValueAt(row,11).toString());
+            CmbStatus.setSelectedItem(tbAnggota.getValueAt(row,14).toString());
+            TnL.setText(tbAnggota.getValueAt(row,3).toString());
+            TNik.setText(tbAnggota.getValueAt(row,6).toString());
+            TNa.setText(tbAnggota.getValueAt(row,2).toString());
+            TUk.setText(tbAnggota.getValueAt(row,5).toString());
+            TNip.setText(tbAnggota.getValueAt(row,13).toString());
+            TNoHp.setText(tbAnggota.getValueAt(row,8).toString());
+            TEmail.setText(tbAnggota.getValueAt(row,7).toString());
+            TAlamat.setText(tbAnggota.getValueAt(row,9).toString());
+            TAgama.setText(tbAnggota.getValueAt(row,12).toString());
+             // Format tanggal yang digunakan dalam tabel (sesuaikan dengan format yang ada)
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            try {
+                // Konversi String ke Date
+                Date masukDate = dateFormat.parse(tbAnggota.getValueAt(row, 15).toString()); // Sesuaikan kolom tabel
+                Date keluarDate = dateFormat.parse(tbAnggota.getValueAt(row, 16).toString());
+                Date lahirDate = dateFormat.parse(tbAnggota.getValueAt(row, 10).toString());
+
+                // Set nilai ke JXDatePicker
+                tanggalMasuk.setDate(masukDate);
+                tanggalKeluar.setDate(keluarDate);
+                tanggalLahir.setDate(lahirDate);
+            } catch (ParseException e) {
+                System.out.println("Format tanggal salah: " + e.getMessage());
+            }
+        }
+    }
+     
+    private void tampil(String cari, String jk, String perpage, String workunitid, String status) {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if("Aktif".equals(status)) {
+            status = "1";
+        } else if ("Tidak Aktif".equals(status)) {
+            status = "0";
+        }
         try {
-            String URL = koneksi.HOST() + "/api/v1/members";
+            String URL = koneksi.HOST() + "/api/v1/members?search=" + cari + "&jenis_kelamin=" + jk + "&per_page=" + perpage + "&work_unit_id=" + workunitid + "&status=" + status;
             System.out.println("Request ke: " + URL);
             
             // Ambil token dari Preferences
@@ -748,29 +1104,35 @@ public class Anggota extends javax.swing.JDialog {
             tabMode.setRowCount(0); // Hapus data lama
 
             System.out.println(rootNode);
-            
+            String statusMember;
             JsonNode dataArray = rootNode.path("data");
 
             if (dataArray.isArray()) {
                 for (JsonNode member : dataArray) {
+                    String id = member.path("id").asText();
                     String username = member.path("username").asText();
                     String nomorAnggota = member.path("nomor_anggota").asText();
                     String namaLengkap = member.path("nama_lengkap").asText();
                     String unitKerja = member.path("work_unit").asText();
+                    String idunitKerja = member.path("work_unit_id").asText();
                     String nik = member.path("nik").asText();
                     String email = member.path("email").asText();
                     String phone = member.path("phone").asText();
                     String alamat = member.path("alamat").asText();
-                    String tanggalLahir = member.path("tanggal_lahir").asText();
+                    String tanggallahir = member.path("tanggal_lahir").asText();
                     String jenisKelamin = member.path("jenis_kelamin").asText();
                     String agama = member.path("agama").asText();
                     String nip = member.path("nip").asText();
-                    String status = member.path("status").asText();
-                    String tanggalMasuk = member.path("tanggal_masuk").asText();
-                    String tanggalKeluar = member.path("tanggal_keluar").asText();
+                    if(member.path("status").asText().equals("1")){
+                        statusMember = "Aktif";
+                    } else {
+                        statusMember = "Tidak Aktif";
+                    }
+                    String tanggalmasuk = member.path("tanggal_masuk").asText();
+                    String tanggalkeluar = member.path("tanggal_keluar").asText();
 
                     // Tambahkan data ke tabel
-                    tabMode.addRow(new Object[]{username, nomorAnggota, namaLengkap, unitKerja, nik, email, phone, alamat, tanggalLahir, jenisKelamin, agama, nip, status, tanggalMasuk, tanggalKeluar});
+                    tabMode.addRow(new Object[]{id, username, nomorAnggota, namaLengkap, idunitKerja, unitKerja, nik, email, phone, alamat, tanggallahir, jenisKelamin, agama, nip, statusMember, tanggalmasuk, tanggalkeluar});
                 }
             }
 
@@ -790,6 +1152,7 @@ public class Anggota extends javax.swing.JDialog {
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
     private widget.Button BtnCariUnitKerja;
+    private widget.Button BtnCariUnitKerjaTable;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
@@ -797,6 +1160,7 @@ public class Anggota extends javax.swing.JDialog {
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
     private javax.swing.JComboBox<String> CmbJk;
+    private javax.swing.JComboBox<String> CmbStatus;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private javax.swing.JPanel PanelInput;
@@ -804,6 +1168,7 @@ public class Anggota extends javax.swing.JDialog {
     private javax.swing.JTextField TAgama;
     private javax.swing.JTextField TAlamat;
     private javax.swing.JTextField TCari;
+    private javax.swing.JTextField TCariUk;
     private javax.swing.JTextField TEmail;
     private javax.swing.JTextField TNa;
     private javax.swing.JTextField TNik;
@@ -812,6 +1177,8 @@ public class Anggota extends javax.swing.JDialog {
     private javax.swing.JTextField TUk;
     private javax.swing.JTextField TnL;
     private javax.swing.JComboBox<String> cmbCrJk;
+    private javax.swing.JComboBox<String> cmbCrJumlahdata;
+    private javax.swing.JComboBox<String> cmbCrStatus;
     private widget.InternalFrame internalFrame1;
     private javax.swing.JLabel jAgama;
     private javax.swing.JLabel jAlamat;
@@ -819,12 +1186,16 @@ public class Anggota extends javax.swing.JDialog {
     private widget.Label jJK;
     private widget.Label jLabel10;
     private widget.Label jLabel14;
+    private widget.Label jLabel16;
     private widget.Label jLabel6;
+    private widget.Label jLabel7;
+    private widget.Label jLabel8;
     private widget.Label jNa;
     private javax.swing.JLabel jNik;
     private javax.swing.JLabel jNip;
     private javax.swing.JLabel jNoHp;
     private javax.swing.JPanel jPanel3;
+    private widget.Label jStatus;
     private widget.Label jTK;
     private widget.Label jTL;
     private widget.Label jTM;

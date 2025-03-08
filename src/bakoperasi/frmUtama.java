@@ -10,7 +10,6 @@ import fungsi.koneksi;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.springframework.http.HttpEntity;
@@ -32,7 +31,9 @@ import tagihan.Tagihan;
 import anggota.Anggota;
 import java.awt.Window;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import unitkerja.UnitKerja;
 import unitkerja.UnitKerja;
 
 /**
@@ -41,10 +42,6 @@ import unitkerja.UnitKerja;
  */
 public class frmUtama extends javax.swing.JFrame {
      private int jmlmenu=0,grid=0,tinggi=0,i=0,menuawal=0;
-      private String URL="",requestJson="";
-      private ObjectMapper mapper = new ObjectMapper();
-      private HttpEntity requestEntity;
-      private JsonNode root;
     /**
      * Creates new form frmUtama
      */
@@ -71,10 +68,10 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame2 = new widget.InternalFrame();
         internalFrame3 = new widget.InternalFrame();
         panelGlass1 = new usu.widget.glass.PanelGlass();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         edAdmin = new javax.swing.JPasswordField();
         edPwd = new javax.swing.JPasswordField();
+        jLabel6 = new javax.swing.JLabel();
         BtnLogin = new widget.Button();
         BtnCancel = new widget.Button();
         DlgHome = new javax.swing.JDialog();
@@ -83,7 +80,7 @@ public class frmUtama extends javax.swing.JFrame {
         label36 = new widget.Label();
         button1 = new widget.Button();
         label35 = new widget.Label();
-        TCari = new widget.TextBox();
+        TCari = new javax.swing.JTextField();
         scrollPane2 = new widget.ScrollPane();
         Panelmenu = new widget.panelGlass();
         btnSimpanan = new widget.ButtonBig();
@@ -106,8 +103,6 @@ public class frmUtama extends javax.swing.JFrame {
         DlgLogin.setResizable(false);
 
         internalFrame2.setBorder(null);
-        internalFrame2.setWarnaAtas(new java.awt.Color(153, 255, 204));
-        internalFrame2.setWarnaBawah(new java.awt.Color(102, 255, 204));
         internalFrame2.setLayout(null);
 
         internalFrame3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true), ":: Silahkan Anda Login ::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 2, 11), new java.awt.Color(50, 50, 50))); // NOI18N
@@ -115,25 +110,17 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame3.setLayout(null);
 
         panelGlass1.setBackground(java.awt.Color.red);
-        panelGlass1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(185, 185, 110)));
-        panelGlass1.setOpaqueImage(false);
+        panelGlass1.setBackgroundImageType(usu.widget.constan.BackgroundConstan.BACKGROUND_IMAGE_STRECT);
+        panelGlass1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         panelGlass1.setRound(false);
-        panelGlass1.setWarna(new java.awt.Color(153, 255, 204));
         panelGlass1.setLayout(null);
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(50, 50, 50));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("ID Admin :");
-        panelGlass1.add(jLabel4);
-        jLabel4.setBounds(2, 12, 75, 23);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(50, 50, 50));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Password :");
+        jLabel5.setText("Username :");
         panelGlass1.add(jLabel5);
-        jLabel5.setBounds(2, 40, 75, 23);
+        jLabel5.setBounds(2, 10, 75, 23);
 
         edAdmin.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         edAdmin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -145,8 +132,15 @@ public class frmUtama extends javax.swing.JFrame {
         panelGlass1.add(edPwd);
         edPwd.setBounds(80, 40, 200, 23);
 
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(50, 50, 50));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("Password :");
+        panelGlass1.add(jLabel6);
+        jLabel6.setBounds(2, 40, 75, 23);
+
         internalFrame3.add(panelGlass1);
-        panelGlass1.setBounds(-1, 25, 342, 76);
+        panelGlass1.setBounds(-1, 25, 310, 80);
 
         BtnLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/lock.png"))); // NOI18N
         BtnLogin.setMnemonic('Z');
@@ -215,12 +209,8 @@ public class frmUtama extends javax.swing.JFrame {
         label35.setPreferredSize(new java.awt.Dimension(105, 23));
         panelisi2.add(label35);
 
-        TCari.setPreferredSize(new java.awt.Dimension(470, 23));
-        TCari.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                TCariKeyPressed(evt);
-            }
-        });
+        TCari.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        TCari.setPreferredSize(new java.awt.Dimension(240, 23));
         panelisi2.add(TCari);
 
         panelMenu.add(panelisi2, java.awt.BorderLayout.PAGE_START);
@@ -278,7 +268,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         internalFrame1.setPreferredSize(new java.awt.Dimension(40, 42));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
-        internalFrame1.setWarnaBawah(new java.awt.Color(209, 248, 239));
+        internalFrame1.setWarnaAtas(new java.awt.Color(220, 220, 220));
+        internalFrame1.setWarnaBawah(new java.awt.Color(220, 220, 220));
         internalFrame1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 2));
 
         BtnMenu.setMnemonic('M');
@@ -332,7 +323,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame4.setBackground(new java.awt.Color(235, 215, 195));
         internalFrame4.setBorder(null);
         internalFrame4.setPreferredSize(new java.awt.Dimension(330, 25));
-        internalFrame4.setWarnaAtas(new java.awt.Color(209, 248, 239));
+        internalFrame4.setWarnaAtas(new java.awt.Color(204, 204, 204));
+        internalFrame4.setWarnaBawah(new java.awt.Color(204, 204, 204));
         internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -396,6 +388,7 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnLog.setText("Log In");
                 DlgHome.dispose();
                 BtnMenu.setVisible(false);
+                isTutup();
             }
             case "Log In" -> {
                 DlgLogin.setVisible(true);
@@ -406,8 +399,8 @@ public class frmUtama extends javax.swing.JFrame {
 
     private void BtnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnMenuActionPerformed
         //TODO add your handling code here:
-         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-        //    isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
+        isTutup();
         DlgHome.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
         DlgHome.setLocationRelativeTo(PanelUtama);
         DlgHome.setVisible(true);
@@ -425,12 +418,6 @@ public class frmUtama extends javax.swing.JFrame {
         DlgHome.dispose();
     }//GEN-LAST:event_button1ActionPerformed
 
-    private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            //isTampil();
-        }
-    }//GEN-LAST:event_TCariKeyPressed
-
     private void btnSimpananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpananActionPerformed
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -441,91 +428,6 @@ public class frmUtama extends javax.swing.JFrame {
         DlgHome.dispose();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnSimpananActionPerformed
-
-    private void BtnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLoginActionPerformed
-        DlgLogin.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgLogin.getGlassPane().setVisible(true);
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() throws JsonProcessingException {
-                try {
-                    String URL = koneksi.HOST() + "/api/v1/users/login";
-                    System.out.println("Request ke: " + URL);
-
-                    // Header
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.APPLICATION_JSON);
-                    headers.set("Accept", "application/json");
-
-                    // Data login
-                    String username = edAdmin.getText();
-                    String password = new String(edPwd.getPassword()).trim();
-
-                    String requestJson = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
-                    System.out.println("Payload: " + requestJson);
-
-                    // Kirim request
-                    HttpEntity<String> requestEntity = new HttpEntity<>(requestJson, headers);
-                    RestTemplate restTemplate = new RestTemplate();
-
-                    ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, requestEntity, String.class);
-
-                    if (response.getStatusCode() == HttpStatus.OK) {
-                        
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode root = mapper.readTree(response.getBody());
-                        // Ambil token dari response
-                        String token = root.path("data").path("token").asText();
-                        System.out.println("Token: " + token);
-
-                        // Simpan token menggunakan Preferences
-                        Preferences prefs = Preferences.userRoot().node("myApp");
-                        prefs.put("auth_token", token);
-
-                        System.out.println("Token berhasil disimpan!");
-                        System.out.println("Login Berhasil: " + root);
-//                      JOptionPane.showMessageDialog(null, root.path("message").asText());
-                        BtnMenu.setVisible(true);
-                        BtnLog.setText("Log Out");
-                        DlgLogin.dispose();
-                    } else {
-                        System.out.println("Login Gagal: " + response.getBody());
-                    }
-                } catch (HttpClientErrorException e) {
-                    System.out.println("Error " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
-//                    // Parse JSON error response
-//                    ObjectMapper mapper = new ObjectMapper();
-//                    JsonNode root = mapper.readTree(e.getResponseBodyAsString());
-//                    // Ambil nilai dari key "errors"
-//                    String errorMessage = root.path("errors").asText();
-//                    JOptionPane.showMessageDialog(null, errorMessage);
-                } catch (JsonProcessingException ex) {
-                    Logger.getLogger(frmUtama.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (RestClientException e) {
-                    System.out.println("Request Error: " + e.getMessage());
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                DlgLogin.getGlassPane().setCursor(Cursor.getDefaultCursor());
-                DlgLogin.getGlassPane().setVisible(false);
-                setCursor(Cursor.getDefaultCursor());
-                edAdmin.setText("");
-                edPwd.setText("");
-            }
-        };
-        worker.execute();
-
-    }//GEN-LAST:event_BtnLoginActionPerformed
-
-    private void BtnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCancelActionPerformed
-        edAdmin.setText("");
-        edPwd.setText("");
-        DlgLogin.dispose();
-    }//GEN-LAST:event_BtnCancelActionPerformed
 
     private void btnTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTagihanActionPerformed
         // TODO add your handling code here:
@@ -562,6 +464,94 @@ public class frmUtama extends javax.swing.JFrame {
         DlgHome.dispose();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnUnitKerjaActionPerformed
+
+    private void BtnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCancelActionPerformed
+        edAdmin.setText("");
+        edPwd.setText("");
+        DlgLogin.dispose();
+    }//GEN-LAST:event_BtnCancelActionPerformed
+
+    private void BtnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLoginActionPerformed
+        DlgLogin.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgLogin.getGlassPane().setVisible(true);
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws JsonProcessingException {
+                try {
+                    String URL = koneksi.HOST() + "/api/v1/users/login";
+                    System.out.println("Request ke: " + URL);
+
+                    // Header
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    headers.set("Accept", "application/json");
+
+                    // Data login
+                    String username = edAdmin.getText();
+                    String password = new String(edPwd.getPassword()).trim();
+
+                    String requestJson = "{ \"username\":\"" + username + "\", \"password\":\"" + password + "\" }";
+                    System.out.println("Payload: " + requestJson);
+
+                    // Kirim request
+                    HttpEntity<String> requestEntity = new HttpEntity<>(requestJson, headers);
+                    RestTemplate restTemplate = new RestTemplate();
+
+                    ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, requestEntity, String.class);
+
+                    if (response.getStatusCode() == HttpStatus.OK) {
+
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(response.getBody());
+                        // Ambil token dari response
+                        String token = root.path("data").path("token").asText();
+                        System.out.println("Token: " + token);
+
+                        // Simpan token menggunakan Preferences
+                        Preferences prefs = Preferences.userRoot().node("myApp");
+                        prefs.put("auth_token", token);
+
+                        System.out.println("Token berhasil disimpan!");
+                        System.out.println("Login Berhasil: " + root);
+                        //                      JOptionPane.showMessageDialog(null, root.path("message").asText());
+                        BtnMenu.setVisible(true);
+                        BtnLog.setText("Log Out");
+                        DlgLogin.dispose();
+                    } else {
+                        System.out.println("Login Gagal: " + response.getBody());
+                    }
+                } catch (HttpClientErrorException e) {
+                    System.out.println("Error " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
+                    // Parse JSON error response
+                    if(e.getResponseBodyAsString().isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Username atau password salah");
+                    } else {
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(e.getResponseBodyAsString());
+                        System.out.println(root);
+                        String errorMessage = root.path("errors").asText();
+                        JOptionPane.showMessageDialog(null, errorMessage);
+                    }
+                } catch (JsonProcessingException ex) {
+                    Logger.getLogger(frmUtama.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RestClientException e) {
+                    System.out.println("Request Error: " + e.getMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                DlgLogin.getGlassPane().setCursor(Cursor.getDefaultCursor());
+                DlgLogin.getGlassPane().setVisible(false);
+                setCursor(Cursor.getDefaultCursor());
+                edAdmin.setText("");
+                edPwd.setText("");
+            }
+        };
+        worker.execute();
+    }//GEN-LAST:event_BtnLoginActionPerformed
 
      private void setLayout() {
         if(jmlmenu<=1){
@@ -639,10 +629,10 @@ public class frmUtama extends javax.swing.JFrame {
             btnUnitKerja.setIconTextGap(0);
             btnUnitKerja.setName("btnUnitKerja");
             btnUnitKerja.setPreferredSize(new java.awt.Dimension(200, 90));
-            btnUnitKerja.addActionListener(this::btnAnggotaActionPerformed);
+            btnUnitKerja.addActionListener(this::btnUnitKerjaActionPerformed);
       }
       
-      private void isTutup() {
+    private void isTutup() {
         Window[] wins = Window.getWindows();
         for (Window win : wins) {
             if (win instanceof JDialog) {
@@ -699,7 +689,7 @@ public class frmUtama extends javax.swing.JFrame {
     private javax.swing.JPanel PanelUtama;
     private usu.widget.glass.PanelGlass PanelWall;
     private widget.panelGlass Panelmenu;
-    private widget.TextBox TCari;
+    private javax.swing.JTextField TCari;
     private widget.ButtonBig btnAnggota;
     private widget.ButtonBig btnSimpanan;
     private widget.ButtonBig btnTagihan;
@@ -711,8 +701,8 @@ public class frmUtama extends javax.swing.JFrame {
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
     private widget.InternalFrame internalFrame4;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private widget.Label label35;
