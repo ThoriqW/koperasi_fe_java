@@ -4,21 +4,24 @@
  */
 package simpanan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fungsi.WarnaTable;
 import fungsi.koneksi;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
+import java.util.prefs.Preferences;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -26,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
  * @author Lenovo
  */
 public class Simpanan extends javax.swing.JDialog {
-    private final DefaultTableModel tabMode;
+    private StringBuilder htmlContent;
     /**
      * Creates new form Anggota
      * @param parent
@@ -38,31 +41,16 @@ public class Simpanan extends javax.swing.JDialog {
 
         this.setLocation(8,1);
         setSize(885,674);
-
-        Object[] row={"Nama Anggota","Jenis Kelamain","Tempat Lahir","Tanggal Lahir","Unit Kerja"};
-        tabMode=new DefaultTableModel(null,row){
-              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
-        };
-        tbAnggota.setModel(tabMode);
         
-        tbAnggota.setPreferredScrollableViewportSize(new Dimension(800,800));
-        tbAnggota.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-        for (int i = 0; i < 5; i++) {
-            TableColumn column = tbAnggota.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(100);
-            }else if(i==1){
-                column.setPreferredWidth(100);
-            }else if(i==2){
-                column.setPreferredWidth(100);
-            }else if(i==3){
-                column.setPreferredWidth(100);
-            }else if(i==4){
-                column.setPreferredWidth(100);
-            }
-        }
-        tbAnggota.setDefaultRenderer(Object.class, new WarnaTable());
+        HTMLEditorKit kit = new HTMLEditorKit();
+//      LoadHTML.setEditable(true);
+        LoadHTML.setEditorKit(kit);
+        StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule(
+                ".isi td{border-right: 1px solid #DDDDDD;font: 8.5px tahoma;height:12px;border-bottom: 1px solid #DDDDDD;background: #ffffff;color:#323232;}"
+        );
+        Document doc = kit.createDefaultDocument();
+        LoadHTML.setDocument(doc);
         ChkInput.setSelected(false);
         isForm(); 
     }
@@ -78,7 +66,7 @@ public class Simpanan extends javax.swing.JDialog {
 
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
-        tbAnggota = new widget.Table();
+        LoadHTML = new javax.swing.JEditorPane();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -91,19 +79,13 @@ public class Simpanan extends javax.swing.JDialog {
         LCount = new widget.Label();
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
-        jLabel14 = new widget.Label();
+        jLabel16 = new widget.Label();
+        cmbCrJumlahdata = new javax.swing.JComboBox<>();
         jLabel6 = new widget.Label();
         TCari = new javax.swing.JTextField();
         BtnCari = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
-        jLabel4 = new widget.Label();
-        jLabel8 = new widget.Label();
-        jLabel13 = new widget.Label();
-        jLabel5 = new widget.Label();
-        TNa = new javax.swing.JTextField();
-        TTmp = new javax.swing.JTextField();
-        TUk = new javax.swing.JTextField();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -116,24 +98,12 @@ public class Simpanan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Anggota ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Simpanan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         Scroll.setOpaque(true);
-
-        tbAnggota.setAutoCreateRowSorter(true);
-        tbAnggota.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
-        tbAnggota.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbAnggotaMouseClicked(evt);
-            }
-        });
-        tbAnggota.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                tbAnggotaKeyReleased(evt);
-            }
-        });
-        Scroll.setViewportView(tbAnggota);
+        Scroll.setViewportView(LoadHTML);
+        LoadHTML.getAccessibleContext().setAccessibleDescription("text/html");
 
         internalFrame1.add(Scroll, java.awt.BorderLayout.CENTER);
 
@@ -278,9 +248,21 @@ public class Simpanan extends javax.swing.JDialog {
         panelGlass9.setPreferredSize(new java.awt.Dimension(44, 44));
         panelGlass9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 10));
 
-        jLabel14.setText("J.K. :");
-        jLabel14.setPreferredSize(new java.awt.Dimension(40, 23));
-        panelGlass9.add(jLabel14);
+        jLabel16.setText("Jumlah Data :");
+        jLabel16.setPreferredSize(new java.awt.Dimension(85, 23));
+        panelGlass9.add(jLabel16);
+
+        cmbCrJumlahdata.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbCrJumlahdata.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "1000" }));
+        cmbCrJumlahdata.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbCrJumlahdata.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbCrJumlahdata.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbCrJumlahdata.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCrJumlahdataActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbCrJumlahdata);
 
         jLabel6.setText("Key Word :");
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
@@ -290,6 +272,7 @@ public class Simpanan extends javax.swing.JDialog {
         TCari.setPreferredSize(new java.awt.Dimension(240, 22));
         panelGlass9.add(TCari);
 
+        BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('2');
         BtnCari.setToolTipText("Alt+2");
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
@@ -314,29 +297,6 @@ public class Simpanan extends javax.swing.JDialog {
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
         FormInput.setLayout(null);
-
-        jLabel4.setText("Nama Anggota :");
-        FormInput.add(jLabel4);
-        jLabel4.setBounds(10, 10, 95, 23);
-
-        jLabel8.setText("Jenis Kelamin :");
-        FormInput.add(jLabel8);
-        jLabel8.setBounds(10, 40, 95, 23);
-
-        jLabel13.setText("Tmp/Tgl. Lahir :");
-        FormInput.add(jLabel13);
-        jLabel13.setBounds(10, 70, 95, 23);
-
-        jLabel5.setText("Unit Kerja :");
-        FormInput.add(jLabel5);
-        jLabel5.setBounds(10, 100, 95, 23);
-        FormInput.add(TNa);
-        TNa.setBounds(110, 10, 320, 23);
-        FormInput.add(TTmp);
-        TTmp.setBounds(110, 70, 210, 23);
-        FormInput.add(TUk);
-        TUk.setBounds(110, 100, 320, 23);
-
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -362,26 +322,6 @@ public class Simpanan extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void tbAnggotaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAnggotaMouseClicked
-        if(tabMode.getRowCount()!=0){
-            try {
-                //                getData();
-            } catch (java.lang.NullPointerException e) {
-            }
-        }
-    }//GEN-LAST:event_tbAnggotaMouseClicked
-
-    private void tbAnggotaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbAnggotaKeyReleased
-        if(tabMode.getRowCount()!=0){
-            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
-                try {
-                    //                    getData();
-                } catch (java.lang.NullPointerException e) {
-                }
-            }
-        }
-    }//GEN-LAST:event_tbAnggotaKeyReleased
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
 
@@ -438,9 +378,7 @@ public class Simpanan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnPrintKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
-//        cmbCrJk.setSelectedIndex(0);
         TCari.setText("");
-        tampil();
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -460,7 +398,7 @@ public class Simpanan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -475,14 +413,15 @@ public class Simpanan extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        tampil();
+        tampil("2026", cmbCrJumlahdata.getSelectedItem().toString());
     }//GEN-LAST:event_formWindowOpened
 
+    private void cmbCrJumlahdataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJumlahdataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCrJumlahdataActionPerformed
+
     public void emptTeks() {
-//        CmbJk.setSelectedIndex(0);
-        TTmp.setText("");
-//        DTPLahir.setSelectedIndex(0);
-//        DTPLahir.setDate(new Date());
+
     }
     
      private void isForm(){
@@ -499,34 +438,181 @@ public class Simpanan extends javax.swing.JDialog {
         }
     }
      
-    private void tampil() {
+    private void tampil(String tahun, String jumlahData) {
+        
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            String URL = koneksi.HOST() + "/api/v1/members";
-            System.out.println("Request ke: " + URL);
+           htmlContent = new StringBuilder();
+           htmlContent.append(                             
+                "<tr class='isi'>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Unit Kerja</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Nomor Anggota</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Nama Anggota</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Tahun</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Januari</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Februari</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Maret</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>April</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Mei</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Juni</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Juli</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Agustus</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>September</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Oktober</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>November</td>"+ 
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Desember</td>"+
+                "</tr>"+
+                "<tr class='isi'>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                "</tr>"
+            );
+           try {
+               this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                String URL = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData;
+                System.out.println("Request ke: " + URL);
 
-            // Header
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Accept", "application/json");
-            
-            // Request menggunakan RestTemplate
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.GET, entity, String.class);
-            
-            // Parsing JSON ke dalam tabel
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(response.getBody());
-            
-            tabMode.setRowCount(0); // Hapus data lama
+                            // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
 
-            System.out.println(rootNode);
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
 
+                // Header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.set("Accept", "application/json");
+                headers.set("Authorization", "Bearer " + token); 
+
+                // Request menggunakan RestTemplate
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.GET, entity, String.class);
+
+                // Parsing JSON ke dalam tabel
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(response.getBody());
+
+                System.out.println(rootNode);
+
+                JsonNode dataArray = rootNode.path("data");
+
+                if (dataArray.isArray()) {
+                for (JsonNode member : dataArray) {
+                    String unitkerja = member.path("work_unit").asText();
+                    String nomoranggota = member.path("nomor_anggota").asText();
+                    String namalengkap = member.path("nama_lengkap").asText();
+                    String tahunSimpanan = member.path("tahun").asText();
+                    JsonNode dataSimpanan = member.path("savings");
+
+                    // Mulai baris tabel
+                    htmlContent.append("<tr class='isi'>")
+                        .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(unitkerja).append("</td>")
+                        .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(nomoranggota).append("</td>")
+                        .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(namalengkap).append("</td>")
+                        .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(tahunSimpanan).append("</td>");
+
+                    // Loop untuk menambahkan kolom savings jika ada
+                    if (dataSimpanan.isArray()) {
+                        for (JsonNode saving : dataSimpanan) {
+                            String pokok = saving.path("pokok").asText("-");
+                            String wajib = saving.path("wajib").asText("-");
+                            String sukarela = saving.path("sukarela").asText("-");
+                            String danaSosial = saving.path("dana_sosial").asText("-");
+
+                            htmlContent
+                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                    .append((pokok != null && pokok.equals("0.00")) ? "" : (pokok != null ? pokok : "-"))
+                                    .append("</td>")
+                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                    .append((wajib != null && wajib.equals("0.00")) ? "" : (wajib != null ? wajib : "-"))
+                                    .append("</td>")
+                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                    .append((sukarela != null && sukarela.equals("0.00")) ? "" : (sukarela != null ? sukarela : "-"))
+                                    .append("</td>")
+                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                    .append((danaSosial != null && danaSosial.equals("0.00")) ? "" : (danaSosial != null ? danaSosial : "-"))
+                                    .append("</td>");
+                        }
+                    }
+
+                    // Tutup baris
+                    htmlContent.append("</tr>");
+                }
+            }
+
+            } catch (JsonProcessingException | RestClientException e) {
+                System.out.println(e);
+            }
+            LoadHTML.setText(
+                "<html>"+
+                  "<head>"+
+                    "<style>"+
+                        "table { width: auto; table-layout: auto; border-collapse: collapse; border-spacing: 0; }"+
+                        "th, td { padding: 4px; text-align: center; white-space: nowrap; }"+
+                        "td { word-wrap: break-word; }"+
+                    "</style>"+
+                  "</head>"+
+                  "<body>"+
+                    "<table align='center' class='tbl_form'>"+
+                      htmlContent.toString()+
+                    "</table>"+
+                  "</body>"+
+                "</html>"
+            );
         } catch (Exception e) {
             System.out.println(e);
-        } finally{
         }
-        LCount.setText(""+tabMode.getRowCount());
+        setCursor(Cursor.getDefaultCursor());
     }
     /**
      * @param args the command line arguments
@@ -544,23 +630,17 @@ public class Simpanan extends javax.swing.JDialog {
     private widget.CekBox ChkInput;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
+    private javax.swing.JEditorPane LoadHTML;
     private javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
     private javax.swing.JTextField TCari;
-    private javax.swing.JTextField TNa;
-    private javax.swing.JTextField TTmp;
-    private javax.swing.JTextField TUk;
+    private javax.swing.JComboBox<String> cmbCrJumlahdata;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
-    private widget.Label jLabel13;
-    private widget.Label jLabel14;
-    private widget.Label jLabel4;
-    private widget.Label jLabel5;
+    private widget.Label jLabel16;
     private widget.Label jLabel6;
-    private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.Table tbAnggota;
     // End of variables declaration//GEN-END:variables
 }

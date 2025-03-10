@@ -34,7 +34,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import unitkerja.UnitKerja;
-import unitkerja.UnitKerja;
+import user.User;
 
 /**
  *
@@ -87,6 +87,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnTagihan = new widget.ButtonBig();
         btnAnggota = new widget.ButtonBig();
         btnUnitKerja = new widget.ButtonBig();
+        btnUser = new widget.ButtonBig();
         internalFrame1 = new widget.InternalFrame();
         BtnMenu = new widget.ButtonBig();
         BtnLog = new widget.ButtonBig();
@@ -105,7 +106,7 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame2.setBorder(null);
         internalFrame2.setLayout(null);
 
-        internalFrame3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true), ":: Silahkan Anda Login ::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 2, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true), ":: Login ::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame3.setRequestFocusEnabled(false);
         internalFrame3.setLayout(null);
 
@@ -260,6 +261,15 @@ public class frmUtama extends javax.swing.JFrame {
         btnUnitKerja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUnitKerjaActionPerformed(evt);
+            }
+        });
+
+        btnUser.setText("Set Admin");
+        btnUser.setIconTextGap(0);
+        btnUser.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUserActionPerformed(evt);
             }
         });
 
@@ -553,7 +563,19 @@ public class frmUtama extends javax.swing.JFrame {
         worker.execute();
     }//GEN-LAST:event_BtnLoginActionPerformed
 
-     private void setLayout() {
+    private void btnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUserActionPerformed
+        // TODO add your handling code here:
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        User user=new User(null,false);
+        user.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        user.setLocationRelativeTo(PanelUtama);
+        user.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnUserActionPerformed
+
+    private void setLayout() {
         if(jmlmenu<=1){
             grid=1;
         }else if(jmlmenu<=4){
@@ -596,6 +618,8 @@ public class frmUtama extends javax.swing.JFrame {
         jmlmenu++;
         Panelmenu.add(btnUnitKerja);
         jmlmenu++;
+        Panelmenu.add(btnUser);
+        jmlmenu++;
      }
      
       private void initBekoperasi() {
@@ -630,6 +654,14 @@ public class frmUtama extends javax.swing.JFrame {
             btnUnitKerja.setName("btnUnitKerja");
             btnUnitKerja.setPreferredSize(new java.awt.Dimension(200, 90));
             btnUnitKerja.addActionListener(this::btnUnitKerjaActionPerformed);
+            
+            btnUser = new widget.ButtonBig();
+            btnUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/user.png")));
+            btnUser.setText("User");
+            btnUser.setIconTextGap(0);
+            btnUser.setName("btnUser");
+            btnUser.setPreferredSize(new java.awt.Dimension(200, 90));
+            btnUser.addActionListener(this::btnUserActionPerformed);
       }
       
     private void isTutup() {
@@ -694,6 +726,7 @@ public class frmUtama extends javax.swing.JFrame {
     private widget.ButtonBig btnSimpanan;
     private widget.ButtonBig btnTagihan;
     private widget.ButtonBig btnUnitKerja;
+    private widget.ButtonBig btnUser;
     private widget.Button button1;
     private javax.swing.JPasswordField edAdmin;
     private javax.swing.JPasswordField edPwd;

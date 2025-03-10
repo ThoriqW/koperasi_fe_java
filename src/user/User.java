@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package unitkerja;
+package user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,36 +25,33 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import user.UpdateUser;
 
 /**
  *
  * @author Lenovo
  */
-public class UnitKerja extends javax.swing.JDialog {
+public class User extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
+    private UpdateUser updateuser = new UpdateUser(null, false);
     /**
      * Creates new form Anggota
      * @param parent
      * @param modal
      */
-    public UnitKerja(java.awt.Frame parent, boolean modal) {
+    public User(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
         this.setLocation(8,1);
         setSize(885,674);
         
-        Object[] row={"ID","Nama","Kode"};
+        Object[] row={"ID","Username","Role","Nama Lengkap","NIK","Email","No.HP","Alamat","Tanggal Lahir","J.K","Agama"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -63,12 +60,26 @@ public class UnitKerja extends javax.swing.JDialog {
         tbUnitKerja.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbUnitKerja.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 11; i++) {
             TableColumn column = tbUnitKerja.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(90);
-            }else if(i==1){
-                column.setPreferredWidth(170);
+            switch (i) {
+                case 0 -> {
+                    column.setMinWidth(0);
+                    column.setMaxWidth(0);
+                    column.setWidth(0);
+                    column.setPreferredWidth(0);
+                }
+                case 1 -> column.setPreferredWidth(110);
+                case 2 -> column.setPreferredWidth(80);
+                case 3 -> column.setPreferredWidth(150);
+                case 4 -> column.setPreferredWidth(110);
+                case 5 -> column.setPreferredWidth(150);
+                case 6 -> column.setPreferredWidth(110);
+                case 7 -> column.setPreferredWidth(150);
+                case 8 -> column.setPreferredWidth(130);
+                case 9 -> column.setPreferredWidth(80);
+                case 10 -> column.setPreferredWidth(80);
+                case 11 -> column.setPreferredWidth(80);
             }
         }
         
@@ -86,6 +97,8 @@ public class UnitKerja extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jUpdateUser = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbUnitKerja = new widget.Table();
@@ -94,7 +107,6 @@ public class UnitKerja extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnBatal = new widget.Button();
         BtnHapus = new widget.Button();
-        BtnEdit = new widget.Button();
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         jLabel10 = new widget.Label();
@@ -106,11 +118,22 @@ public class UnitKerja extends javax.swing.JDialog {
         BtnCari = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
-        TKd = new javax.swing.JTextField();
-        jkd = new javax.swing.JLabel();
-        jNuK = new javax.swing.JLabel();
-        TNuK = new javax.swing.JTextField();
+        TUsername = new javax.swing.JTextField();
+        jUsername = new javax.swing.JLabel();
+        jPassword = new javax.swing.JLabel();
+        TPassword = new javax.swing.JTextField();
         ChkInput = new widget.CekBox();
+
+        jUpdateUser.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jUpdateUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/menu-item.png"))); // NOI18N
+        jUpdateUser.setText("Update User");
+        jUpdateUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jUpdateUserActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jUpdateUser);
+        jUpdateUser.getAccessibleContext().setAccessibleName("Update User");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(611, 155));
@@ -122,13 +145,14 @@ public class UnitKerja extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Unit Kerja ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data User ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         Scroll.setOpaque(true);
 
         tbUnitKerja.setAutoCreateRowSorter(true);
         tbUnitKerja.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbUnitKerja.setComponentPopupMenu(jPopupMenu1);
         tbUnitKerja.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbUnitKerjaMouseClicked(evt);
@@ -200,23 +224,6 @@ public class UnitKerja extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(BtnHapus);
-
-        BtnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
-        BtnEdit.setMnemonic('G');
-        BtnEdit.setText("Ganti");
-        BtnEdit.setToolTipText("Alt+G");
-        BtnEdit.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnEditActionPerformed(evt);
-            }
-        });
-        BtnEdit.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnEditKeyPressed(evt);
-            }
-        });
-        panelGlass8.add(BtnEdit);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -318,20 +325,20 @@ public class UnitKerja extends javax.swing.JDialog {
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
         FormInput.setLayout(null);
-        FormInput.add(TKd);
-        TKd.setBounds(110, 20, 120, 23);
+        FormInput.add(TUsername);
+        TUsername.setBounds(70, 20, 260, 23);
 
-        jkd.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jkd.setText("Kode :");
-        FormInput.add(jkd);
-        jkd.setBounds(70, 20, 40, 23);
+        jUsername.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jUsername.setText("Username :");
+        FormInput.add(jUsername);
+        jUsername.setBounds(10, 20, 60, 23);
 
-        jNuK.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jNuK.setText("Nama Unit Kerja :");
-        FormInput.add(jNuK);
-        jNuK.setBounds(20, 50, 90, 23);
-        FormInput.add(TNuK);
-        TNuK.setBounds(110, 50, 260, 23);
+        jPassword.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jPassword.setText("Password :");
+        FormInput.add(jPassword);
+        jPassword.setBounds(10, 50, 60, 23);
+        FormInput.add(TPassword);
+        TPassword.setBounds(70, 50, 260, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -384,7 +391,7 @@ public class UnitKerja extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            String URL = koneksi.HOST() + "/api/v1/work-units";
+            String URL = koneksi.HOST() + "/api/v1/users/register";
             System.out.println("Request ke: " + URL);
 
             // Ambil token dari Preferences
@@ -404,9 +411,9 @@ public class UnitKerja extends javax.swing.JDialog {
 
             // Data Anggota
             Map<String, Object> requestData = new HashMap<>();
-            requestData.put("nama", TNuK.getText());
-            requestData.put("kode", TKd.getText());
-
+            requestData.put("username", TUsername.getText());
+            requestData.put("password", TPassword.getText());
+            
             // Konversi Map ke JSON String menggunakan ObjectMapper
             ObjectMapper objectMapper = new ObjectMapper();
             String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
@@ -459,9 +466,9 @@ public class UnitKerja extends javax.swing.JDialog {
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
          this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if(tbUnitKerja.getSelectedRow() != -1){
-            String idUnitKerja = tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),0).toString();
+            String idUser = tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),0).toString();
             try {
-                String URL = koneksi.HOST() + "/api/v1/work-units/" + idUnitKerja;
+                String URL = koneksi.HOST() + "/api/v1/users/" + idUser;
                 System.out.println("Request ke: " + URL);
 
                 // Ambil token dari Preferences
@@ -509,79 +516,6 @@ public class UnitKerja extends javax.swing.JDialog {
             BtnHapusActionPerformed(null);
         }
     }//GEN-LAST:event_BtnHapusKeyPressed
-
-    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(tbUnitKerja.getSelectedRow() != -1){
-            String idUnitKerja = tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),0).toString();
-            try {
-                String URL = koneksi.HOST() + "/api/v1/work-units/" + idUnitKerja;
-                System.out.println("Request ke: " + URL);
-
-                // Ambil token dari Preferences
-                Preferences prefs = Preferences.userRoot().node("myApp");
-                String token = prefs.get("auth_token", null);
-
-                if (token == null) {
-                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
-                    return;
-                }
-                
-                // Data Anggota
-                Map<String, Object> requestData = new HashMap<>();
-                requestData.put("nama", TNuK.getText());
-                requestData.put("kode", TKd.getText());
-
-                // Konversi Map ke JSON String
-                ObjectMapper objectMapper = new ObjectMapper();
-                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);                
-                
-
-                // Menggunakan HttpClient
-                HttpClient httpClient = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(URL))
-                        .header("Content-Type", "application/json")
-                        .header("Accept", "application/json")
-                        .header("Authorization", "Bearer " + token)
-                        .method("PATCH", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
-                        .build();
-
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                
-                System.out.println(response.body());
-                System.out.println(requestJsonAnggota);
-
-                if (response.statusCode() == 200) {
-                    JsonNode root = objectMapper.readTree(response.body());
-                    JOptionPane.showMessageDialog(null, root.path("message").asText());
-                    tabMode.setRowCount(0);
-                    tampil("");
-                } else {
-                    JsonNode root = objectMapper.readTree(response.body());
-                    JOptionPane.showMessageDialog(null, root.path("errors").asText());
-                }
-
-            } catch (JsonProcessingException e) {
-                JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
-                System.err.println("JSON Processing Error: " + e.getMessage());
-            } catch (IOException | InterruptedException e) {
-                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
-                System.err.println("Error saat melakukan request: " + e.getMessage());
-            } finally {
-                this.setCursor(Cursor.getDefaultCursor());
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
-        }
-        setCursor(Cursor.getDefaultCursor());
-    }//GEN-LAST:event_BtnEditActionPerformed
-
-    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            BtnEditActionPerformed(null);
-        }
-    }//GEN-LAST:event_BtnEditKeyPressed
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
 
@@ -637,9 +571,19 @@ public class UnitKerja extends javax.swing.JDialog {
         tampil("");
     }//GEN-LAST:event_formWindowOpened
 
+    private void jUpdateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jUpdateUserActionPerformed
+        // TODO add your handling code here:
+        updateuser.emptTeks();
+        updateuser.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        updateuser.setLocationRelativeTo(internalFrame1);
+        updateuser.setAlwaysOnTop(false);
+        updateuser.setVisible(true);
+        updateuser.setUpdateData(tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),0).toString(),tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),1).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),3).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),4).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),5).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),6).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),7).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),8).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),9).toString(), tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),9).toString());
+    }//GEN-LAST:event_jUpdateUserActionPerformed
+
     public void emptTeks() {
-        TKd.setText("");
-        TNuK.setText("");
+        TUsername.setText("");
+        TPassword.setText("");
     }
     
     private void isForm(){
@@ -655,19 +599,18 @@ public class UnitKerja extends javax.swing.JDialog {
             ChkInput.setVisible(true);
         }
     }
-     
+
     private void getData() {
         int row=tbUnitKerja.getSelectedRow();
         if(row!= -1){
-            TKd.setText(tbUnitKerja.getValueAt(row,2).toString());
-            TNuK.setText(tbUnitKerja.getValueAt(row,1).toString());
+            TUsername.setText(tbUnitKerja.getValueAt(row,1).toString());
         }
     }
      
     private void tampil(String cari) {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            String URL = koneksi.HOST() + "/api/v1/work-units?search=" + cari;
+            String URL = koneksi.HOST() + "/api/v1/users?search=" + cari;
             System.out.println("Request ke: " + URL);
             
             // Ambil token dari Preferences
@@ -678,9 +621,9 @@ public class UnitKerja extends javax.swing.JDialog {
                 System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
                 return;
             }
-
-            tabMode.setRowCount(0); // Hapus data lama
             
+            tabMode.setRowCount(0); // Hapus data lama
+
             // Header
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -703,11 +646,30 @@ public class UnitKerja extends javax.swing.JDialog {
             if (dataArray.isArray()) {
                 for (JsonNode member : dataArray) {
                     String id = member.path("id").asText();
-                    String nama = member.path("nama").asText();
-                    String kode = member.path("kode").asText();
+                    String nama = member.path("username").asText();
+                    String role = member.path("role").asText();
+                    String namalengkap = member.path("nama_lengkap").asText();
+                    String nik = member.path("nik").asText();
+                    String email = member.path("email").asText();
+                    String phone = member.path("phone").asText();
+                    String alamat = member.path("alamat").asText();
+                    String tanggallahir = member.path("tanggal_lahir").asText();
+                    String jeniskelamin = member.path("jenis_kelamin").asText();
+                    String agama = member.path("agama").asText();
 
                     // Tambahkan data ke tabel
-                    tabMode.addRow(new Object[]{id ,nama, kode});
+                    tabMode.addRow(new Object[]{id ,
+                        nama.equals("null") ? "" : nama,
+                        role.equals("null") ? "" : role,
+                        namalengkap.equals("null") ? "" : namalengkap,
+                        nik.equals("null") ? "" : nik,
+                        email.equals("null") ? "" : email,
+                        phone.equals("null") ? "" : phone,
+                        alamat.equals("null") ? "" : alamat, 
+                        tanggallahir.equals("null") ? "" : tanggallahir,
+                        jeniskelamin.equals("null") ? "" : jeniskelamin,
+                        agama.equals("null") ? "" : agama
+                    });
                 }
             }
 
@@ -726,7 +688,6 @@ public class UnitKerja extends javax.swing.JDialog {
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
-    private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
@@ -737,14 +698,16 @@ public class UnitKerja extends javax.swing.JDialog {
     private javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
     private javax.swing.JTextField TCari;
-    private javax.swing.JTextField TKd;
-    private javax.swing.JTextField TNuK;
+    private javax.swing.JTextField TPassword;
+    private javax.swing.JTextField TUsername;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel6;
-    private javax.swing.JLabel jNuK;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel jkd;
+    private javax.swing.JLabel jPassword;
+    private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JMenuItem jUpdateUser;
+    private javax.swing.JLabel jUsername;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.Table tbUnitKerja;

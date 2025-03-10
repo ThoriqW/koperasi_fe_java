@@ -1085,6 +1085,8 @@ public class Anggota extends javax.swing.JDialog {
                 System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
                 return;
             }
+            
+            tabMode.setRowCount(0);
 
             // Header
             HttpHeaders headers = new HttpHeaders();
@@ -1100,8 +1102,6 @@ public class Anggota extends javax.swing.JDialog {
             // Parsing JSON ke dalam tabel
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response.getBody());
-            
-            tabMode.setRowCount(0); // Hapus data lama
 
             System.out.println(rootNode);
             String statusMember;
