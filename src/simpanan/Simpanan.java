@@ -4,23 +4,32 @@
  */
 package simpanan;
 
+import anggota.CariAnggota;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fungsi.koneksi;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import static java.awt.image.ImageObserver.WIDTH;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
+import javax.swing.JOptionPane;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,6 +39,8 @@ import org.springframework.web.client.RestTemplate;
  */
 public class Simpanan extends javax.swing.JDialog {
     private StringBuilder htmlContent;
+    private CariAnggota carianggota=new CariAnggota(null,false);
+    private String idAnggota = "";
     /**
      * Creates new form Anggota
      * @param parent
@@ -53,6 +64,28 @@ public class Simpanan extends javax.swing.JDialog {
         LoadHTML.setDocument(doc);
         ChkInput.setSelected(false);
         isForm(); 
+        
+        carianggota.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(carianggota.getTable().getSelectedRow()!= -1){                   
+                    TtambahAnggotaSimpanan.setText(carianggota.tbAnggota.getValueAt(carianggota.tbAnggota.getSelectedRow(),3).toString());
+                    idAnggota = carianggota.tbAnggota.getValueAt(carianggota.tbAnggota.getSelectedRow(),0).toString();
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
     }
 
     /**
@@ -81,11 +114,19 @@ public class Simpanan extends javax.swing.JDialog {
         panelGlass9 = new widget.panelisi();
         jLabel16 = new widget.Label();
         cmbCrJumlahdata = new javax.swing.JComboBox<>();
+        jLabel7 = new widget.Label();
+        TCariTahun = new javax.swing.JTextField();
         jLabel6 = new widget.Label();
         TCari = new javax.swing.JTextField();
         BtnCari = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
+        jnL = new javax.swing.JLabel();
+        TtambahSimpanan = new javax.swing.JTextField();
+        TtambahAnggotaSimpanan = new javax.swing.JTextField();
+        jnL1 = new javax.swing.JLabel();
+        BtnAddAnggotaSimpanan = new widget.Button();
+        BtnCariAnggota = new widget.Button();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -102,8 +143,12 @@ public class Simpanan extends javax.swing.JDialog {
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         Scroll.setOpaque(true);
+
+        LoadHTML.setBorder(null);
+        LoadHTML.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LoadHTML.setForeground(new java.awt.Color(50, 50, 50));
+        LoadHTML.setName("LoadHTML"); // NOI18N
         Scroll.setViewportView(LoadHTML);
-        LoadHTML.getAccessibleContext().setAccessibleDescription("text/html");
 
         internalFrame1.add(Scroll, java.awt.BorderLayout.CENTER);
 
@@ -253,7 +298,7 @@ public class Simpanan extends javax.swing.JDialog {
         panelGlass9.add(jLabel16);
 
         cmbCrJumlahdata.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        cmbCrJumlahdata.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "1000" }));
+        cmbCrJumlahdata.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "25", "50", "100", "1000" }));
         cmbCrJumlahdata.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
         cmbCrJumlahdata.setMinimumSize(new java.awt.Dimension(94, 23));
         cmbCrJumlahdata.setPreferredSize(new java.awt.Dimension(96, 23));
@@ -263,6 +308,14 @@ public class Simpanan extends javax.swing.JDialog {
             }
         });
         panelGlass9.add(cmbCrJumlahdata);
+
+        jLabel7.setText("Tahun :");
+        jLabel7.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelGlass9.add(jLabel7);
+
+        TCariTahun.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        TCariTahun.setPreferredSize(new java.awt.Dimension(100, 22));
+        panelGlass9.add(TCariTahun);
 
         jLabel6.setText("Key Word :");
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
@@ -293,10 +346,56 @@ public class Simpanan extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         PanelInput.setOpaque(false);
+        PanelInput.setPreferredSize(new java.awt.Dimension(850, 100));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
         FormInput.setLayout(null);
+
+        jnL.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jnL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jnL.setText("Tambah Anggota Simpanan :");
+        FormInput.add(jnL);
+        jnL.setBounds(360, 30, 150, 23);
+        FormInput.add(TtambahSimpanan);
+        TtambahSimpanan.setBounds(130, 30, 210, 23);
+        FormInput.add(TtambahAnggotaSimpanan);
+        TtambahAnggotaSimpanan.setBounds(520, 30, 210, 23);
+
+        jnL1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jnL1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jnL1.setText("Tambah Simpanan :");
+        FormInput.add(jnL1);
+        jnL1.setBounds(10, 30, 110, 23);
+
+        BtnAddAnggotaSimpanan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
+        BtnAddAnggotaSimpanan.setMnemonic('2');
+        BtnAddAnggotaSimpanan.setToolTipText("Alt+2");
+        BtnAddAnggotaSimpanan.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnAddAnggotaSimpanan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAddAnggotaSimpananActionPerformed(evt);
+            }
+        });
+        BtnAddAnggotaSimpanan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnAddAnggotaSimpananKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnAddAnggotaSimpanan);
+        BtnAddAnggotaSimpanan.setBounds(780, 30, 28, 23);
+
+        BtnCariAnggota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnCariAnggota.setMnemonic('1');
+        BtnCariAnggota.setToolTipText("ALt+1");
+        BtnCariAnggota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCariAnggotaActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnCariAnggota);
+        BtnCariAnggota.setBounds(740, 30, 28, 23);
+
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -324,7 +423,57 @@ public class Simpanan extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        LoadHTML.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            String URL = koneksi.HOST() + "/api/v1/savings";
+            System.out.println("Request ke: " + URL);
 
+            // Ambil token dari Preferences
+            Preferences prefs = Preferences.userRoot().node("myApp");
+            String token = prefs.get("auth_token", null);
+
+            if (token == null) {
+                JOptionPane.showMessageDialog(null, "Token tidak ditemukan! Harap login terlebih dahulu.");
+                return;
+            }
+
+            // Header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "application/json");
+            headers.set("Authorization", "Bearer " + token);
+
+            // Data Anggota
+            Map<String, Object> requestData = new HashMap<>();
+            requestData.put("tahun", TtambahSimpanan.getText());
+
+            // Konversi Map ke JSON String menggunakan ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+
+            // Request menggunakan RestTemplate
+            RestTemplate restAnggota = new RestTemplate();
+            HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
+            ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.POST, entity, String.class);
+            
+            // Menangani response
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JOptionPane.showMessageDialog(null, root.path("message").asText());
+                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
+            }
+        } catch (HttpClientErrorException e) { 
+            // Menangani error dari API (misalnya 400 Bad Request)
+            System.out.println("Error Response: " + e.getResponseBodyAsString());
+            JOptionPane.showMessageDialog(null, e.getResponseBodyAsString());
+        } catch (JsonProcessingException | HeadlessException | RestClientException e) {
+            System.out.println("Terjadi kesalahan: " + e.getMessage());
+        }
+        setCursor(Cursor.getDefaultCursor());
+        LoadHTML.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -348,7 +497,45 @@ public class Simpanan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            try {
+                String URL = koneksi.HOST() + "/api/v1/savings/" + TCariTahun.getText();
+                System.out.println("Request ke: " + URL);
 
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
+
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+
+                // Header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.set("Accept", "application/json");
+                headers.set("Authorization", "Bearer " + token); 
+
+                // Request menggunakan RestTemplate
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.DELETE, entity, String.class);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    JsonNode root = objectMapper.readTree(response.getBody());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Gagal hapus data");
+                }
+
+            } catch (JsonProcessingException | RestClientException e) {
+                System.out.println(e);
+            }
+        setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -398,7 +585,7 @@ public class Simpanan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-
+        tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -413,12 +600,84 @@ public class Simpanan extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        tampil("2026", cmbCrJumlahdata.getSelectedItem().toString());
+        tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
     }//GEN-LAST:event_formWindowOpened
 
     private void cmbCrJumlahdataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJumlahdataActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbCrJumlahdataActionPerformed
+
+    private void BtnAddAnggotaSimpananActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAddAnggotaSimpananActionPerformed
+        // TODO add your handling code here:
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        LoadHTML.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            String URL = koneksi.HOST() + "/api/v1/savings/" + TCariTahun.getText() + "/add-member";
+            System.out.println("Request ke: " + URL);
+
+            // Ambil token dari Preferences
+            Preferences prefs = Preferences.userRoot().node("myApp");
+            String token = prefs.get("auth_token", null);
+
+            if (token == null) {
+                JOptionPane.showMessageDialog(null, "Token tidak ditemukan! Harap login terlebih dahulu.");
+                return;
+            }
+
+            // Header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "application/json");
+            headers.set("Authorization", "Bearer " + token);
+
+            // Data Anggota
+            Map<String, Object> requestData = new HashMap<>();
+            requestData.put("member_profile_id", idAnggota);
+
+            // Konversi Map ke JSON String menggunakan ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+            
+            System.err.println(requestJsonAnggota);
+            
+            // Request menggunakan RestTemplate
+            RestTemplate restAnggota = new RestTemplate();
+            HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
+            ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.POST, entity, String.class);
+            
+            // Menangani response
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JOptionPane.showMessageDialog(null, root.path("message").asText());
+                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
+            }
+        } catch (HttpClientErrorException e) { 
+            // Menangani error dari API (misalnya 400 Bad Request)
+            System.out.println("Error Response: " + e.getResponseBodyAsString());
+            JOptionPane.showMessageDialog(null, e.getResponseBodyAsString());
+        } catch (JsonProcessingException | HeadlessException | RestClientException e) {
+            System.out.println("Terjadi kesalahan: " + e.getMessage());
+        } finally {
+            idAnggota = "";
+            TtambahAnggotaSimpanan.setText("");
+        }
+        setCursor(Cursor.getDefaultCursor());
+        LoadHTML.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_BtnAddAnggotaSimpananActionPerformed
+
+    private void BtnAddAnggotaSimpananKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAddAnggotaSimpananKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnAddAnggotaSimpananKeyPressed
+
+    private void BtnCariAnggotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariAnggotaActionPerformed
+        carianggota.emptTeks();
+        carianggota.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        carianggota.setLocationRelativeTo(internalFrame1);
+        carianggota.setAlwaysOnTop(false);
+        carianggota.setVisible(true);
+    }//GEN-LAST:event_BtnCariAnggotaActionPerformed
 
     public void emptTeks() {
 
@@ -427,7 +686,7 @@ public class Simpanan extends javax.swing.JDialog {
      private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,158));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,100));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -439,78 +698,78 @@ public class Simpanan extends javax.swing.JDialog {
     }
      
     private void tampil(String tahun, String jumlahData) {
-        
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        LoadHTML.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         try {
            htmlContent = new StringBuilder();
            htmlContent.append(                             
                 "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Unit Kerja</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Nomor Anggota</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Nama Anggota</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' rowspan='2'>Tahun</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Januari</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Februari</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Maret</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>April</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Mei</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Juni</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Juli</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Agustus</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>September</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Oktober</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>November</td>"+ 
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center' colspan='4'>Desember</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Unit Kerja</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nomor Anggota</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nama Anggota</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Tahun</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Januari</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Februari</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Maret</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>April</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Mei</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juni</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juli</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Agustus</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>September</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Oktober</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>November</td>"+ 
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Desember</td>"+
                 "</tr>"+
                 "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#FFFFFF' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
                 "</tr>"
             );
            try {
@@ -609,19 +868,23 @@ public class Simpanan extends javax.swing.JDialog {
                   "</body>"+
                 "</html>"
             );
+            LoadHTML.setCursor(Cursor.getDefaultCursor());
+            LoadHTML.setCaretPosition(0);
+            setCursor(Cursor.getDefaultCursor());
         } catch (Exception e) {
             System.out.println(e);
         }
-        setCursor(Cursor.getDefaultCursor());
     }
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private widget.Button BtnAddAnggotaSimpanan;
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
+    private widget.Button BtnCariAnggota;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
@@ -634,12 +897,18 @@ public class Simpanan extends javax.swing.JDialog {
     private javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
     private javax.swing.JTextField TCari;
+    private javax.swing.JTextField TCariTahun;
+    private javax.swing.JTextField TtambahAnggotaSimpanan;
+    private javax.swing.JTextField TtambahSimpanan;
     private javax.swing.JComboBox<String> cmbCrJumlahdata;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel16;
     private widget.Label jLabel6;
+    private widget.Label jLabel7;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel jnL;
+    private javax.swing.JLabel jnL1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     // End of variables declaration//GEN-END:variables

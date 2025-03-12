@@ -278,8 +278,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         internalFrame1.setPreferredSize(new java.awt.Dimension(40, 42));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
-        internalFrame1.setWarnaAtas(new java.awt.Color(220, 220, 220));
-        internalFrame1.setWarnaBawah(new java.awt.Color(220, 220, 220));
+        internalFrame1.setWarnaAtas(new java.awt.Color(247, 247, 247));
+        internalFrame1.setWarnaBawah(new java.awt.Color(247, 247, 247));
         internalFrame1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 2));
 
         BtnMenu.setMnemonic('M');
@@ -333,8 +333,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame4.setBackground(new java.awt.Color(235, 215, 195));
         internalFrame4.setBorder(null);
         internalFrame4.setPreferredSize(new java.awt.Dimension(330, 25));
-        internalFrame4.setWarnaAtas(new java.awt.Color(204, 204, 204));
-        internalFrame4.setWarnaBawah(new java.awt.Color(204, 204, 204));
+        internalFrame4.setWarnaAtas(new java.awt.Color(247, 247, 247));
+        internalFrame4.setWarnaBawah(new java.awt.Color(247, 247, 247));
         internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
