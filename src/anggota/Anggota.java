@@ -870,7 +870,7 @@ public class Anggota extends javax.swing.JDialog {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
 
-                    // Request menggunakan RestTemplate
+                // Request menggunakan RestTemplate
                 RestTemplate restAnggota = new RestTemplate();
                 HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
                 ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.PUT, entity, String.class);
