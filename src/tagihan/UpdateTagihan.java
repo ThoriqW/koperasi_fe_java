@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package simpanan;
+package tagihan;
 
+import simpanan.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +44,7 @@ import unitkerja.CariUnitKerja;
  *
  * @author Lenovo
  */
-public class UpdateSimpanan extends javax.swing.JDialog {
+public class UpdateTagihan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private CariUnitKerja cariunitkerja=new CariUnitKerja(null,false);
     private String updateUnitKerja="0",tahunSimpanan="0";
@@ -52,7 +53,7 @@ public class UpdateSimpanan extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public UpdateSimpanan(java.awt.Frame parent, boolean modal) {
+    public UpdateTagihan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
@@ -172,7 +173,7 @@ public class UpdateSimpanan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Simpanan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Tagihan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         Scroll.setOpaque(true);
@@ -866,7 +867,7 @@ public class UpdateSimpanan extends javax.swing.JDialog {
     private void tampil(String cari, String tahun, String jumlahData) {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            String URL = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
+            String URL = koneksi.HOST() + "/api/v1/bills?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
             System.out.println("Request ke: " + URL);
             
             // Ambil token dari Preferences

@@ -462,7 +462,7 @@ public class Simpanan extends javax.swing.JDialog {
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 JsonNode root = objectMapper.readTree(response.getBody());
                 JOptionPane.showMessageDialog(null, root.path("message").asText());
-                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString(), TCari.getText());
             } else {
                 JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
             }
@@ -528,7 +528,7 @@ public class Simpanan extends javax.swing.JDialog {
                 if (response.getStatusCode() == HttpStatus.OK) {
                     JsonNode root = objectMapper.readTree(response.getBody());
                     JOptionPane.showMessageDialog(null, root.path("message").asText());
-                    tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+                    tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString(), TCari.getText());
                 } else {
                     JOptionPane.showMessageDialog(null, "Gagal hapus data");
                 }
@@ -572,6 +572,7 @@ public class Simpanan extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
+        tampil(TCariTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString(), "");
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -591,7 +592,7 @@ public class Simpanan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+        tampil(TCariTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString(), TCari.getText());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -606,7 +607,7 @@ public class Simpanan extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+        tampil(TCariTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString(), TCari.getText());
     }//GEN-LAST:event_formWindowOpened
 
     private void cmbCrJumlahdataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJumlahdataActionPerformed
@@ -655,7 +656,7 @@ public class Simpanan extends javax.swing.JDialog {
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 JsonNode root = objectMapper.readTree(response.getBody());
                 JOptionPane.showMessageDialog(null, root.path("message").asText());
-                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString());
+                tampil(TCariTahun.getText(), cmbCrJumlahdata.getSelectedItem().toString(), TCari.getText());
             } else {
                 JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
             }
@@ -703,7 +704,7 @@ public class Simpanan extends javax.swing.JDialog {
         }
     }
      
-    private void tampil(String tahun, String jumlahData) {
+    private void tampil(String tahun, String jumlahData, String cari) {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         LoadHTML.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         try {
@@ -780,7 +781,7 @@ public class Simpanan extends javax.swing.JDialog {
             );
            try {
                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                String URL = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData;
+                String URL = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
                 System.out.println("Request ke: " + URL);
 
                             // Ambil token dari Preferences
