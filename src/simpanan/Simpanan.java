@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import static java.awt.image.ImageObserver.WIDTH;
+import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -32,6 +34,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 /**
  *
@@ -41,7 +46,7 @@ public class Simpanan extends javax.swing.JDialog {
     private StringBuilder htmlContent;
     private CariAnggota carianggota=new CariAnggota(null,false);
     private UpdateSimpanan updatesimpanan=new UpdateSimpanan(null,false);
-    private String idAnggota = "";
+    private String idAnggota = "",updateTahunSimpanan="";
     /**
      * Creates new form Anggota
      * @param parent
@@ -128,6 +133,9 @@ public class Simpanan extends javax.swing.JDialog {
         jnL1 = new javax.swing.JLabel();
         BtnAddAnggotaSimpanan = new widget.Button();
         BtnCariAnggota = new widget.Button();
+        BtnUpdateTahun = new widget.Button();
+        TTahun = new javax.swing.JTextField();
+        jnL2 = new javax.swing.JLabel();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -347,7 +355,7 @@ public class Simpanan extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(850, 100));
+        PanelInput.setPreferredSize(new java.awt.Dimension(850, 130));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
@@ -357,17 +365,17 @@ public class Simpanan extends javax.swing.JDialog {
         jnL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL.setText("Tambah Anggota Simpanan :");
         FormInput.add(jnL);
-        jnL.setBounds(360, 30, 150, 23);
+        jnL.setBounds(350, 60, 150, 23);
         FormInput.add(TtambahSimpanan);
-        TtambahSimpanan.setBounds(130, 30, 210, 23);
+        TtambahSimpanan.setBounds(130, 60, 210, 23);
         FormInput.add(TtambahAnggotaSimpanan);
-        TtambahAnggotaSimpanan.setBounds(520, 30, 210, 23);
+        TtambahAnggotaSimpanan.setBounds(510, 60, 210, 23);
 
         jnL1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jnL1.setText("Tambah Simpanan :");
+        jnL1.setText("Simpanan Tahun :");
         FormInput.add(jnL1);
-        jnL1.setBounds(10, 30, 110, 23);
+        jnL1.setBounds(10, 20, 110, 23);
 
         BtnAddAnggotaSimpanan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
         BtnAddAnggotaSimpanan.setMnemonic('2');
@@ -384,7 +392,7 @@ public class Simpanan extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnAddAnggotaSimpanan);
-        BtnAddAnggotaSimpanan.setBounds(780, 30, 28, 23);
+        BtnAddAnggotaSimpanan.setBounds(770, 60, 28, 23);
 
         BtnCariAnggota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnCariAnggota.setMnemonic('1');
@@ -395,7 +403,33 @@ public class Simpanan extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnCariAnggota);
-        BtnCariAnggota.setBounds(740, 30, 28, 23);
+        BtnCariAnggota.setBounds(730, 60, 28, 23);
+
+        BtnUpdateTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
+        BtnUpdateTahun.setMnemonic('G');
+        BtnUpdateTahun.setText("Update Tahun");
+        BtnUpdateTahun.setToolTipText("Alt+G");
+        BtnUpdateTahun.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnUpdateTahun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnUpdateTahunActionPerformed(evt);
+            }
+        });
+        BtnUpdateTahun.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnUpdateTahunKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnUpdateTahun);
+        BtnUpdateTahun.setBounds(250, 20, 130, 30);
+        FormInput.add(TTahun);
+        TTahun.setBounds(130, 20, 110, 23);
+
+        jnL2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jnL2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jnL2.setText("Tambah Simpanan :");
+        FormInput.add(jnL2);
+        jnL2.setBounds(10, 60, 110, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -686,6 +720,74 @@ public class Simpanan extends javax.swing.JDialog {
         carianggota.setVisible(true);
     }//GEN-LAST:event_BtnCariAnggotaActionPerformed
 
+    private void BtnUpdateTahunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateTahunActionPerformed
+        // TODO add your handling code here:
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(!"".equals(TTahun.getText())){
+            try {
+                String URL = koneksi.HOST() + "/api/v1/savings/"+updateTahunSimpanan;
+                System.out.println("Request ke: " + URL);
+
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
+
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+
+                // Data Anggota
+                Map<String, Object> requestData = new HashMap<>();
+                requestData.put("tahun", TTahun.getText());
+
+                // Konversi Map ke JSON String
+                ObjectMapper objectMapper = new ObjectMapper();
+                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+
+                // Menggunakan HttpClient
+                HttpClient httpClient = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .method("PUT", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
+                .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                System.out.println(response.body());
+                System.out.println(requestJsonAnggota);
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tampil("",TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
+                } else {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("errors").asText());
+                }
+
+            } catch (JsonProcessingException e) {
+                JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
+                System.err.println("JSON Processing Error: " + e.getMessage());
+            } catch (IOException | InterruptedException e) {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
+                System.err.println("Error saat melakukan request: " + e.getMessage());
+            } finally {
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Simpanan tidak ditemukan");
+        } 
+        setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_BtnUpdateTahunActionPerformed
+
+    private void BtnUpdateTahunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUpdateTahunKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnUpdateTahunKeyPressed
+
     public void emptTeks() {
 
     }
@@ -693,7 +795,7 @@ public class Simpanan extends javax.swing.JDialog {
      private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,100));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,130));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -819,7 +921,8 @@ public class Simpanan extends javax.swing.JDialog {
                     String namalengkap = member.path("nama_lengkap").asText();
                     String tahunSimpanan = member.path("tahun").asText();
                     JsonNode dataSimpanan = member.path("savings");
-
+                    TTahun.setText(tahunSimpanan);
+                    updateTahunSimpanan=tahunSimpanan;
                     // Mulai baris tabel
                     htmlContent.append("<tr class='isi'>")
                         .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(unitkerja).append("</td>")
@@ -897,6 +1000,7 @@ public class Simpanan extends javax.swing.JDialog {
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private widget.Button BtnUpdateTahun;
     private widget.CekBox ChkInput;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
@@ -905,6 +1009,7 @@ public class Simpanan extends javax.swing.JDialog {
     private widget.ScrollPane Scroll;
     private javax.swing.JTextField TCari;
     private javax.swing.JTextField TCariTahun;
+    private javax.swing.JTextField TTahun;
     private javax.swing.JTextField TtambahAnggotaSimpanan;
     private javax.swing.JTextField TtambahSimpanan;
     private javax.swing.JComboBox<String> cmbCrJumlahdata;
@@ -916,6 +1021,7 @@ public class Simpanan extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel jnL;
     private javax.swing.JLabel jnL1;
+    private javax.swing.JLabel jnL2;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     // End of variables declaration//GEN-END:variables

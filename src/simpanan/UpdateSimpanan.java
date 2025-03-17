@@ -11,7 +11,6 @@ import fungsi.WarnaTable;
 import fungsi.koneksi;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import unitkerja.CariUnitKerja;
 
 /**
@@ -46,7 +44,7 @@ import unitkerja.CariUnitKerja;
 public class UpdateSimpanan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private CariUnitKerja cariunitkerja=new CariUnitKerja(null,false);
-    private String updateUnitKerja="0",tahunSimpanan="0";
+    private String updateUnitKerja="0";
     /**
      * Creates new form Anggota
      * @param parent
@@ -136,7 +134,6 @@ public class UpdateSimpanan extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnBatal = new widget.Button();
         BtnHapus = new widget.Button();
-        BtnEdit = new widget.Button();
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         jLabel10 = new widget.Label();
@@ -159,7 +156,6 @@ public class UpdateSimpanan extends javax.swing.JDialog {
         TUnitKerja = new javax.swing.JTextField();
         BtnCariUnitKerja = new widget.Button();
         jkd4 = new javax.swing.JLabel();
-        BtnUpdateTahun = new widget.Button();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -250,23 +246,6 @@ public class UpdateSimpanan extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(BtnHapus);
-
-        BtnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
-        BtnEdit.setMnemonic('G');
-        BtnEdit.setText("Ganti");
-        BtnEdit.setToolTipText("Alt+G");
-        BtnEdit.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnEditActionPerformed(evt);
-            }
-        });
-        BtnEdit.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnEditKeyPressed(evt);
-            }
-        });
-        panelGlass8.add(BtnEdit);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -428,24 +407,6 @@ public class UpdateSimpanan extends javax.swing.JDialog {
         FormInput.add(jkd4);
         jkd4.setBounds(10, 70, 90, 23);
 
-        BtnUpdateTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
-        BtnUpdateTahun.setMnemonic('G');
-        BtnUpdateTahun.setText("Update Tahun");
-        BtnUpdateTahun.setToolTipText("Alt+G");
-        BtnUpdateTahun.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnUpdateTahun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnUpdateTahunActionPerformed(evt);
-            }
-        });
-        BtnUpdateTahun.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnUpdateTahunKeyPressed(evt);
-            }
-        });
-        FormInput.add(BtnUpdateTahun);
-        BtnUpdateTahun.setBounds(560, 10, 130, 30);
-
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -496,56 +457,68 @@ public class UpdateSimpanan extends javax.swing.JDialog {
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-            String URL = koneksi.HOST() + "/api/v1/work-units";
-            System.out.println("Request ke: " + URL);
+        if(tbUnitKerja.getSelectedRow() != -1){
+            try {
+                String URL = koneksi.HOST() + "/api/v1/savings/"+TTahun.getText()+"/transfer-work-unit/"+tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),2).toString();
+                System.out.println("Request ke: " + URL);
 
-            // Ambil token dari Preferences
-            Preferences prefs = Preferences.userRoot().node("myApp");
-            String token = prefs.get("auth_token", null);
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
 
-            if (token == null) {
-                JOptionPane.showMessageDialog(null, "Token tidak ditemukan! Harap login terlebih dahulu.");
-                return;
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+                
+                // Data Anggota
+                Map<String, Object> requestData = new HashMap<>();
+                requestData.put("work_unit_id", updateUnitKerja);
+
+                // Konversi Map ke JSON String
+                ObjectMapper objectMapper = new ObjectMapper();
+                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);                
+                
+
+                // Menggunakan HttpClient
+                HttpClient httpClient = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(URL))
+                        .header("Content-Type", "application/json")
+                        .header("Accept", "application/json")
+                        .header("Authorization", "Bearer " + token)
+                        .method("PATCH", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                
+                System.out.println(response.body());
+                System.out.println(requestJsonAnggota);
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tabMode.setRowCount(0);
+                    tampil("",TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
+                } else {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("errors").asText());
+                }
+
+            } catch (JsonProcessingException e) {
+                JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
+                System.err.println("JSON Processing Error: " + e.getMessage());
+            } catch (IOException | InterruptedException e) {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
+                System.err.println("Error saat melakukan request: " + e.getMessage());
+            } finally {
+                this.setCursor(Cursor.getDefaultCursor());
             }
-
-            // Header
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Accept", "application/json");
-            headers.set("Authorization", "Bearer " + token);
-
-            // Data Anggota
-            Map<String, Object> requestData = new HashMap<>();
-            requestData.put("kode", TTahun.getText());
-
-            // Konversi Map ke JSON String menggunakan ObjectMapper
-            ObjectMapper objectMapper = new ObjectMapper();
-            String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
-
-            // Request menggunakan RestTemplate
-            RestTemplate restAnggota = new RestTemplate();
-            HttpEntity<String> entity = new HttpEntity<>(requestJsonAnggota, headers);
-            ResponseEntity<String> response = restAnggota.exchange(URL, HttpMethod.POST, entity, String.class);
-
-            // Menangani response
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                JsonNode root = objectMapper.readTree(response.getBody());
-                JOptionPane.showMessageDialog(null, root.path("message").asText());
-                tabMode.setRowCount(0);
-                emptTeks();
-                tampil("",TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
-            } else {
-                JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
-            }
-        } catch (HttpClientErrorException e) {
-            // Menangani error dari API (misalnya 400 Bad Request)
-            System.out.println("Error Response: " + e.getResponseBodyAsString());
-            JOptionPane.showMessageDialog(null, e.getResponseBodyAsString());
-        } catch (JsonProcessingException | HeadlessException | RestClientException e) {
-            System.out.println("Terjadi kesalahan: " + e.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
         }
         setCursor(Cursor.getDefaultCursor());
+        updateUnitKerja="0";
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -623,78 +596,6 @@ public class UpdateSimpanan extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_BtnHapusKeyPressed
 
-    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(tbUnitKerja.getSelectedRow() != -1){
-            try {
-                String URL = koneksi.HOST() + "/api/v1/savings/"+TTahun.getText()+"/transfer-work-unit/"+tbUnitKerja.getValueAt(tbUnitKerja.getSelectedRow(),2).toString();
-                System.out.println("Request ke: " + URL);
-
-                // Ambil token dari Preferences
-                Preferences prefs = Preferences.userRoot().node("myApp");
-                String token = prefs.get("auth_token", null);
-
-                if (token == null) {
-                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
-                    return;
-                }
-                
-                // Data Anggota
-                Map<String, Object> requestData = new HashMap<>();
-                requestData.put("work_unit_id", updateUnitKerja);
-
-                // Konversi Map ke JSON String
-                ObjectMapper objectMapper = new ObjectMapper();
-                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);                
-                
-
-                // Menggunakan HttpClient
-                HttpClient httpClient = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(URL))
-                        .header("Content-Type", "application/json")
-                        .header("Accept", "application/json")
-                        .header("Authorization", "Bearer " + token)
-                        .method("PATCH", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
-                        .build();
-
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                
-                System.out.println(response.body());
-                System.out.println(requestJsonAnggota);
-
-                if (response.statusCode() == 200) {
-                    JsonNode root = objectMapper.readTree(response.body());
-                    JOptionPane.showMessageDialog(null, root.path("message").asText());
-                    tabMode.setRowCount(0);
-                    tampil("",TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
-                } else {
-                    JsonNode root = objectMapper.readTree(response.body());
-                    JOptionPane.showMessageDialog(null, root.path("errors").asText());
-                }
-
-            } catch (JsonProcessingException e) {
-                JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
-                System.err.println("JSON Processing Error: " + e.getMessage());
-            } catch (IOException | InterruptedException e) {
-                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
-                System.err.println("Error saat melakukan request: " + e.getMessage());
-            } finally {
-                this.setCursor(Cursor.getDefaultCursor());
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
-        }
-        setCursor(Cursor.getDefaultCursor());
-        updateUnitKerja="0";
-    }//GEN-LAST:event_BtnEditActionPerformed
-
-    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            BtnEditActionPerformed(null);
-        }
-    }//GEN-LAST:event_BtnEditKeyPressed
-
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
 
     }//GEN-LAST:event_BtnPrintActionPerformed
@@ -761,77 +662,11 @@ public class UpdateSimpanan extends javax.swing.JDialog {
         cariunitkerja.setVisible(true);
     }//GEN-LAST:event_BtnCariUnitKerjaActionPerformed
 
-    private void BtnUpdateTahunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateTahunActionPerformed
-        // TODO add your handling code here:
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-            String URL = koneksi.HOST() + "/api/v1/savings/"+tahunSimpanan;
-            System.out.println("Request ke: " + URL);
-
-            // Ambil token dari Preferences
-            Preferences prefs = Preferences.userRoot().node("myApp");
-            String token = prefs.get("auth_token", null);
-
-            if (token == null) {
-                System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
-                return;
-            }
-
-            // Data Anggota
-            Map<String, Object> requestData = new HashMap<>();
-            requestData.put("tahun", TTahun.getText());
-
-            // Konversi Map ke JSON String
-            ObjectMapper objectMapper = new ObjectMapper();
-            String requestJsonAnggota = objectMapper.writeValueAsString(requestData);                
-
-            // Menggunakan HttpClient
-            HttpClient httpClient = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(URL))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .header("Authorization", "Bearer " + token)
-                    .method("PUT", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println(response.body());
-            System.out.println(requestJsonAnggota);
-
-            if (response.statusCode() == 200) {
-                JsonNode root = objectMapper.readTree(response.body());
-                JOptionPane.showMessageDialog(null, root.path("message").asText());
-                tabMode.setRowCount(0);
-                tahunSimpanan = TTahun.getText();
-                tampil("",TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
-            } else {
-                JsonNode root = objectMapper.readTree(response.body());
-                JOptionPane.showMessageDialog(null, root.path("errors").asText());
-            }
-
-        } catch (JsonProcessingException e) {
-            JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
-            System.err.println("JSON Processing Error: " + e.getMessage());
-        } catch (IOException | InterruptedException e) {
-            JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
-            System.err.println("Error saat melakukan request: " + e.getMessage());
-        } finally {
-            this.setCursor(Cursor.getDefaultCursor());
-        }
-        setCursor(Cursor.getDefaultCursor());
-    }//GEN-LAST:event_BtnUpdateTahunActionPerformed
-
-    private void BtnUpdateTahunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUpdateTahunKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnUpdateTahunKeyPressed
-
     public void setUpdateSimpanan(String tahun) {
         // Mengatur nilai ke JTextField sesuai dengan parameter JSON
         TTahun.setText(tahun);
-        tahunSimpanan=tahun;
         isForm();
+        tampil(TCari.getText(),TTahun.getText(),cmbCrJumlahdata.getSelectedItem().toString());
     }
     
     public void emptTeks() {
@@ -929,12 +764,10 @@ public class UpdateSimpanan extends javax.swing.JDialog {
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
     private widget.Button BtnCariUnitKerja;
-    private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
-    private widget.Button BtnUpdateTahun;
     private widget.CekBox ChkInput;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;

@@ -14,6 +14,8 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import static java.awt.image.ImageObserver.WIDTH;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +35,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 /**
  *
@@ -44,8 +49,10 @@ public class Tagihan extends javax.swing.JDialog {
         "Januari", "Februari", "Maret", "April", "Mei", "Juni",
         "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     };
-    private String deleteTahun="";
+    private String deleteTahun="",updateTahunTagihan="",updateBulanTagihan="";
     private int deleteBulan;
+    
+    private UpdateTagihan updatetagihan=new UpdateTagihan(null,false);
     /**
      * Creates new form Anggota
      * @param parent
@@ -114,7 +121,7 @@ public class Tagihan extends javax.swing.JDialog {
         }
         tbAnggota.setDefaultRenderer(Object.class, new WarnaTable());
         ChkInput.setSelected(true);
-        isForm(); 
+        isForm();
     }
 
     /**
@@ -134,13 +141,15 @@ public class Tagihan extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnBatal = new widget.Button();
         BtnHapus = new widget.Button();
-        BtnEdit = new widget.Button();
+        BtnTransferUnitKerja = new widget.Button();
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         jLabel10 = new widget.Label();
         LCount = new widget.Label();
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
+        jLabel16 = new widget.Label();
+        cmbCrJumlahdata = new javax.swing.JComboBox<>();
         jLabel15 = new widget.Label();
         cmbBulan = new javax.swing.JComboBox<>();
         jLabel4 = new widget.Label();
@@ -197,6 +206,10 @@ public class Tagihan extends javax.swing.JDialog {
         TNamaAnggota = new javax.swing.JTextField();
         TUnitKerja = new javax.swing.JTextField();
         TTagihanTahun = new javax.swing.JTextField();
+        BtnUpdateTahun = new widget.Button();
+        jnL19 = new javax.swing.JLabel();
+        TTahunTagihanDitemukan = new javax.swing.JTextField();
+        cmbBulanTagihanDitemukan = new javax.swing.JComboBox<>();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -288,22 +301,22 @@ public class Tagihan extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnHapus);
 
-        BtnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
-        BtnEdit.setMnemonic('G');
-        BtnEdit.setText("Ganti");
-        BtnEdit.setToolTipText("Alt+G");
-        BtnEdit.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnEdit.addActionListener(new java.awt.event.ActionListener() {
+        BtnTransferUnitKerja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
+        BtnTransferUnitKerja.setMnemonic('G');
+        BtnTransferUnitKerja.setText("Ganti");
+        BtnTransferUnitKerja.setToolTipText("Alt+G");
+        BtnTransferUnitKerja.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnTransferUnitKerja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnEditActionPerformed(evt);
+                BtnTransferUnitKerjaActionPerformed(evt);
             }
         });
-        BtnEdit.addKeyListener(new java.awt.event.KeyAdapter() {
+        BtnTransferUnitKerja.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnEditKeyPressed(evt);
+                BtnTransferUnitKerjaKeyPressed(evt);
             }
         });
-        panelGlass8.add(BtnEdit);
+        panelGlass8.add(BtnTransferUnitKerja);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -370,6 +383,22 @@ public class Tagihan extends javax.swing.JDialog {
 
         panelGlass9.setPreferredSize(new java.awt.Dimension(44, 44));
         panelGlass9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 10));
+
+        jLabel16.setText("Jumlah Data :");
+        jLabel16.setPreferredSize(new java.awt.Dimension(85, 23));
+        panelGlass9.add(jLabel16);
+
+        cmbCrJumlahdata.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbCrJumlahdata.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "25", "50", "100", "1000" }));
+        cmbCrJumlahdata.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbCrJumlahdata.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbCrJumlahdata.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbCrJumlahdata.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCrJumlahdataActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbCrJumlahdata);
 
         jLabel15.setText("Bulan :");
         jLabel15.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -445,7 +474,7 @@ public class Tagihan extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(850, 430));
+        PanelInput.setPreferredSize(new java.awt.Dimension(850, 455));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         FormInput.setPreferredSize(new java.awt.Dimension(850, 137));
@@ -455,7 +484,7 @@ public class Tagihan extends javax.swing.JDialog {
         jnL1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL1.setText("2. Setoran");
         FormInput.add(jnL1);
-        jnL1.setBounds(20, 210, 70, 23);
+        jnL1.setBounds(20, 250, 70, 23);
 
         TTPokok.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -463,187 +492,226 @@ public class Tagihan extends javax.swing.JDialog {
             }
         });
         FormInput.add(TTPokok);
-        TTPokok.setBounds(100, 170, 210, 23);
+        TTPokok.setBounds(100, 210, 210, 23);
         FormInput.add(TTSimpananPokok);
-        TTSimpananPokok.setBounds(100, 50, 210, 23);
+        TTSimpananPokok.setBounds(100, 90, 210, 23);
 
         jnL2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL2.setText("Keterangan :");
         FormInput.add(jnL2);
-        jnL2.setBounds(340, 330, 70, 23);
+        jnL2.setBounds(340, 370, 70, 23);
         FormInput.add(TTJumlahTagihan);
-        TTJumlahTagihan.setBounds(740, 50, 190, 23);
+        TTJumlahTagihan.setBounds(740, 60, 190, 23);
         FormInput.add(TSKeterangan);
-        TSKeterangan.setBounds(420, 330, 210, 50);
+        TSKeterangan.setBounds(420, 370, 210, 50);
         FormInput.add(TTSimpananWajib);
-        TTSimpananWajib.setBounds(100, 80, 210, 23);
+        TTSimpananWajib.setBounds(100, 120, 210, 23);
         FormInput.add(TTDanaSosial);
-        TTDanaSosial.setBounds(100, 110, 210, 23);
+        TTDanaSosial.setBounds(100, 150, 210, 23);
         FormInput.add(TTSukarela);
-        TTSukarela.setBounds(100, 140, 210, 23);
+        TTSukarela.setBounds(100, 180, 210, 23);
 
         jnL3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL3.setText("Pokok :");
         FormInput.add(jnL3);
-        jnL3.setBounds(20, 170, 70, 23);
+        jnL3.setBounds(20, 210, 70, 23);
 
         jnL4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL4.setText("Dana Sosial :");
         FormInput.add(jnL4);
-        jnL4.setBounds(0, 110, 90, 23);
+        jnL4.setBounds(0, 150, 90, 23);
 
         jnL5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL5.setText("Jumlah Tagihan :");
         FormInput.add(jnL5);
-        jnL5.setBounds(640, 50, 90, 23);
+        jnL5.setBounds(640, 60, 90, 23);
 
         jnL6.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jnL6.setText("Simpanan Pokok :");
+        jnL6.setText("Tagihan :");
         FormInput.add(jnL6);
-        jnL6.setBounds(0, 50, 90, 23);
+        jnL6.setBounds(0, 20, 90, 23);
 
         jnL7.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL7.setText("Simpanan Wajib :");
         FormInput.add(jnL7);
-        jnL7.setBounds(0, 80, 90, 23);
+        jnL7.setBounds(0, 120, 90, 23);
 
         jnL8.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL8.setText("Sukarela :");
         FormInput.add(jnL8);
-        jnL8.setBounds(20, 140, 70, 23);
+        jnL8.setBounds(20, 180, 70, 23);
         FormInput.add(TTBunga);
-        TTBunga.setBounds(420, 50, 210, 23);
+        TTBunga.setBounds(420, 90, 210, 23);
 
         jnL9.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL9.setText("Bunga :");
         FormInput.add(jnL9);
-        jnL9.setBounds(340, 50, 70, 23);
+        jnL9.setBounds(340, 90, 70, 23);
 
         jnL10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL10.setText("Jangka Waktu :");
         FormInput.add(jnL10);
-        jnL10.setBounds(320, 110, 90, 23);
+        jnL10.setBounds(320, 150, 90, 23);
 
         jnL11.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL11.setText("Jangka Waktu Ke :");
         FormInput.add(jnL11);
-        jnL11.setBounds(320, 140, 90, 23);
+        jnL11.setBounds(320, 180, 90, 23);
 
         jnL12.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL12.setText("Jumlah Pinjaman :");
         FormInput.add(jnL12);
-        jnL12.setBounds(320, 170, 90, 23);
+        jnL12.setBounds(320, 210, 90, 23);
         FormInput.add(TTJangkaWaktu);
-        TTJangkaWaktu.setBounds(420, 110, 210, 23);
+        TTJangkaWaktu.setBounds(420, 150, 210, 23);
         FormInput.add(TTJangkaWaktuKe);
-        TTJangkaWaktuKe.setBounds(420, 140, 210, 23);
+        TTJangkaWaktuKe.setBounds(420, 180, 210, 23);
         FormInput.add(TTJumlahPinjaman);
-        TTJumlahPinjaman.setBounds(420, 170, 210, 23);
+        TTJumlahPinjaman.setBounds(420, 210, 210, 23);
 
         jnL13.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jnL13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL13.setText("1. Tagihan");
         FormInput.add(jnL13);
-        jnL13.setBounds(20, 20, 70, 23);
+        jnL13.setBounds(20, 60, 70, 23);
 
         jnL14.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL14.setText("Simpanan Pokok :");
         FormInput.add(jnL14);
-        jnL14.setBounds(0, 240, 90, 23);
+        jnL14.setBounds(0, 280, 90, 23);
         FormInput.add(TSPokok);
-        TSPokok.setBounds(100, 360, 210, 23);
+        TSPokok.setBounds(100, 400, 210, 23);
 
         jnL15.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL15.setText("Pokok :");
         FormInput.add(jnL15);
-        jnL15.setBounds(20, 360, 70, 23);
+        jnL15.setBounds(20, 400, 70, 23);
 
         jnL16.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL16.setText("Sukarela :");
         FormInput.add(jnL16);
-        jnL16.setBounds(20, 330, 70, 23);
+        jnL16.setBounds(20, 370, 70, 23);
 
         jnL17.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL17.setText("Dana Sosial :");
         FormInput.add(jnL17);
-        jnL17.setBounds(0, 300, 90, 23);
+        jnL17.setBounds(0, 340, 90, 23);
 
         jnL18.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL18.setText("Simpanan Wajib :");
         FormInput.add(jnL18);
-        jnL18.setBounds(0, 270, 90, 23);
+        jnL18.setBounds(0, 310, 90, 23);
         FormInput.add(TSDanaSosial);
-        TSDanaSosial.setBounds(100, 300, 210, 23);
+        TSDanaSosial.setBounds(100, 340, 210, 23);
         FormInput.add(TSSukarela);
-        TSSukarela.setBounds(100, 330, 210, 23);
+        TSSukarela.setBounds(100, 370, 210, 23);
         FormInput.add(TSSimpananWajib);
-        TSSimpananWajib.setBounds(100, 270, 210, 23);
+        TSSimpananWajib.setBounds(100, 310, 210, 23);
         FormInput.add(TSSimpananPokok);
-        TSSimpananPokok.setBounds(100, 240, 210, 23);
+        TSSimpananPokok.setBounds(100, 280, 210, 23);
 
         jnL23.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL23.setText("Bunga :");
         FormInput.add(jnL23);
-        jnL23.setBounds(340, 240, 70, 23);
+        jnL23.setBounds(340, 280, 70, 23);
         FormInput.add(TSBunga);
-        TSBunga.setBounds(420, 240, 210, 23);
+        TSBunga.setBounds(420, 280, 210, 23);
 
         jnL24.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL24.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL24.setText("Barang :");
         FormInput.add(jnL24);
-        jnL24.setBounds(340, 80, 70, 23);
+        jnL24.setBounds(340, 120, 70, 23);
         FormInput.add(TTBarang);
-        TTBarang.setBounds(420, 80, 210, 23);
+        TTBarang.setBounds(420, 120, 210, 23);
 
         jnL25.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL25.setText("Barang :");
         FormInput.add(jnL25);
-        jnL25.setBounds(340, 270, 70, 23);
+        jnL25.setBounds(340, 310, 70, 23);
         FormInput.add(TSBarang);
-        TSBarang.setBounds(420, 270, 210, 23);
+        TSBarang.setBounds(420, 310, 210, 23);
         FormInput.add(TSSisaTunggakan);
-        TSSisaTunggakan.setBounds(420, 300, 210, 23);
+        TSSisaTunggakan.setBounds(420, 340, 210, 23);
 
         jnL26.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jnL26.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jnL26.setText("Sisa Tunggakan :");
         FormInput.add(jnL26);
-        jnL26.setBounds(320, 300, 90, 23);
+        jnL26.setBounds(320, 340, 90, 23);
 
         TBulan.setEditable(false);
         FormInput.add(TBulan);
-        TBulan.setBounds(550, 20, 170, 23);
+        TBulan.setBounds(320, 60, 90, 23);
 
         TNamaAnggota.setEditable(false);
         FormInput.add(TNamaAnggota);
-        TNamaAnggota.setBounds(100, 20, 210, 23);
+        TNamaAnggota.setBounds(100, 60, 210, 23);
 
         TUnitKerja.setEditable(false);
         FormInput.add(TUnitKerja);
-        TUnitKerja.setBounds(320, 20, 210, 23);
+        TUnitKerja.setBounds(490, 60, 140, 23);
 
         TTagihanTahun.setEditable(false);
         FormInput.add(TTagihanTahun);
-        TTagihanTahun.setBounds(740, 20, 190, 23);
+        TTagihanTahun.setBounds(420, 60, 60, 23);
+
+        BtnUpdateTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
+        BtnUpdateTahun.setMnemonic('G');
+        BtnUpdateTahun.setText("Update Tahun");
+        BtnUpdateTahun.setToolTipText("Alt+G");
+        BtnUpdateTahun.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnUpdateTahun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnUpdateTahunActionPerformed(evt);
+            }
+        });
+        BtnUpdateTahun.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnUpdateTahunKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnUpdateTahun);
+        BtnUpdateTahun.setBounds(360, 17, 130, 30);
+
+        jnL19.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jnL19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jnL19.setText("Simpanan Pokok :");
+        FormInput.add(jnL19);
+        jnL19.setBounds(0, 90, 90, 23);
+        FormInput.add(TTahunTagihanDitemukan);
+        TTahunTagihanDitemukan.setBounds(100, 20, 80, 23);
+
+        cmbBulanTagihanDitemukan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cmbBulanTagihanDitemukan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember" }));
+        cmbBulanTagihanDitemukan.setBorder(new com.formdev.flatlaf.ui.FlatTextBorder());
+        cmbBulanTagihanDitemukan.setMinimumSize(new java.awt.Dimension(94, 23));
+        cmbBulanTagihanDitemukan.setPreferredSize(new java.awt.Dimension(96, 23));
+        cmbBulanTagihanDitemukan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbBulanTagihanDitemukanActionPerformed(evt);
+            }
+        });
+        FormInput.add(cmbBulanTagihanDitemukan);
+        cmbBulanTagihanDitemukan.setBounds(190, 20, 160, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -764,7 +832,7 @@ public class Tagihan extends javax.swing.JDialog {
                     JsonNode root = objectMapper.readTree(response.getBody());
                     JOptionPane.showMessageDialog(null, root.path("message").asText());
                     tabMode.setRowCount(0);
-                    tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex());
+                    tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
                 } else {
                     JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
                 }
@@ -804,6 +872,7 @@ public class Tagihan extends javax.swing.JDialog {
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         System.out.println(deleteTahun);
+        if(tbAnggota.getSelectedRow() != -1){
             try {
                 String URL = koneksi.HOST() + "/api/v1/bills/"+deleteTahun+"/"+deleteBulan;
                 System.out.println("Request ke: " + URL);
@@ -834,7 +903,7 @@ public class Tagihan extends javax.swing.JDialog {
                     JsonNode root = objectMapper.readTree(response.getBody());
                     JOptionPane.showMessageDialog(null, root.path("message").asText());
                     tabMode.setRowCount(0);
-                    tampil("", TTahun.getText(), cmbBulan.getSelectedIndex());
+                    tampil("", TTahun.getText(), cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
                     emptTeks();
                 } else {
                     JOptionPane.showMessageDialog(null, "Gagal hapus data");
@@ -843,6 +912,9 @@ public class Tagihan extends javax.swing.JDialog {
             } catch (JsonProcessingException | RestClientException e) {
                 System.out.println(e);
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
+        }
         setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -852,18 +924,8 @@ public class Tagihan extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_BtnHapusKeyPressed
 
-    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-
-    }//GEN-LAST:event_BtnEditActionPerformed
-
-    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            BtnEditActionPerformed(null);
-        }
-    }//GEN-LAST:event_BtnEditKeyPressed
-
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-
+        
     }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
@@ -875,7 +937,7 @@ public class Tagihan extends javax.swing.JDialog {
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
 //        cmbCrJk.setSelectedIndex(0);
         TCari.setText("");
-        tampil("",TTahun.getText(),cmbBulan.getSelectedIndex());
+        tampil("",TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -895,7 +957,7 @@ public class Tagihan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex());
+        tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
         deleteTahun = TTahun.getText();
         deleteBulan = cmbBulan.getSelectedIndex();
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -912,7 +974,7 @@ public class Tagihan extends javax.swing.JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
-        tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex());
+        tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
     }//GEN-LAST:event_formWindowOpened
 
     private void cmbBulanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbBulanActionPerformed
@@ -968,7 +1030,7 @@ public class Tagihan extends javax.swing.JDialog {
                 JsonNode root = objectMapper.readTree(response.getBody());
                 JOptionPane.showMessageDialog(null, root.path("message").asText());
                 tabMode.setRowCount(0);
-                tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex());
+                tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
             } else {
                 JOptionPane.showMessageDialog(null, "Gagal simpan, periksa kembali data");
             }
@@ -985,6 +1047,102 @@ public class Tagihan extends javax.swing.JDialog {
     private void BtnCreateTagihanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCreateTagihanKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnCreateTagihanKeyPressed
+
+    private void BtnTransferUnitKerjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTransferUnitKerjaActionPerformed
+        // TODO add your handling code here:
+        if(tbAnggota.getSelectedRow() != -1){
+            updatetagihan.emptTeks();
+            updatetagihan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            updatetagihan.setLocationRelativeTo(internalFrame1);
+            updatetagihan.setAlwaysOnTop(false);
+            updatetagihan.setVisible(true);
+            updatetagihan.setUpdateTagihan(tbAnggota.getValueAt(tbAnggota.getSelectedRow(),5).toString(), tbAnggota.getValueAt(tbAnggota.getSelectedRow(),3).toString(), tbAnggota.getValueAt(tbAnggota.getSelectedRow(),4).toString(), 
+                    tbAnggota.getValueAt(tbAnggota.getSelectedRow(),6).toString(), Arrays.asList(arrayBulan).indexOf(tbAnggota.getValueAt(tbAnggota.getSelectedRow(),6).toString()) + 1, tbAnggota.getValueAt(tbAnggota.getSelectedRow(),1).toString(),tbAnggota.getValueAt(tbAnggota.getSelectedRow(),3).toString());
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih data terlebih dahulu");
+        }
+    }//GEN-LAST:event_BtnTransferUnitKerjaActionPerformed
+
+    private void BtnTransferUnitKerjaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnTransferUnitKerjaKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnTransferUnitKerjaKeyPressed
+
+    private void cmbCrJumlahdataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCrJumlahdataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCrJumlahdataActionPerformed
+
+    private void BtnUpdateTahunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateTahunActionPerformed
+        // TODO add your handling code here:
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(!"".equals(TTahunTagihanDitemukan.getText())){
+            try {
+                String URL = koneksi.HOST() + "/api/v1/bills/"+updateTahunTagihan+"/"+updateBulanTagihan;
+                System.out.println("Request ke: " + URL);
+
+                // Ambil token dari Preferences
+                Preferences prefs = Preferences.userRoot().node("myApp");
+                String token = prefs.get("auth_token", null);
+
+                if (token == null) {
+                    System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                    return;
+                }
+
+                // Data Anggota
+                Map<String, Object> requestData = new HashMap<>();
+                requestData.put("tahun", TTahunTagihanDitemukan.getText());
+                requestData.put("bulan", cmbBulanTagihanDitemukan.getSelectedIndex());
+
+                // Konversi Map ke JSON String
+                ObjectMapper objectMapper = new ObjectMapper();
+                String requestJsonAnggota = objectMapper.writeValueAsString(requestData);
+
+                // Menggunakan HttpClient
+                HttpClient httpClient = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .method("PUT", HttpRequest.BodyPublishers.ofString(requestJsonAnggota))
+                .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                System.out.println(response.body());
+                System.out.println(requestJsonAnggota);
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("message").asText());
+                    tampil(TCari.getText(),TTahun.getText(),cmbBulan.getSelectedIndex(), cmbCrJumlahdata.getSelectedItem().toString());
+                } else {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JOptionPane.showMessageDialog(null, root.path("errors").asText());
+                }
+
+            } catch (JsonProcessingException e) {
+                JOptionPane.showMessageDialog(null, "Kesalahan dalam pemrosesan data: " + e.getMessage());
+                System.err.println("JSON Processing Error: " + e.getMessage());
+            } catch (IOException | InterruptedException e) {
+                JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat menghubungi server: " + e.getMessage());
+                System.err.println("Error saat melakukan request: " + e.getMessage());
+            } finally {
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Tagihan tidak ditemukan");
+        }
+        setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_BtnUpdateTahunActionPerformed
+
+    private void BtnUpdateTahunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUpdateTahunKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnUpdateTahunKeyPressed
+
+    private void cmbBulanTagihanDitemukanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbBulanTagihanDitemukanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbBulanTagihanDitemukanActionPerformed
 
     public void emptTeks() {
         TNamaAnggota.setText("");
@@ -1018,7 +1176,7 @@ public class Tagihan extends javax.swing.JDialog {
      private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,430));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,455));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -1061,10 +1219,10 @@ public class Tagihan extends javax.swing.JDialog {
         }
     }
      
-    private void tampil(String cari, String tahun, int bulan) {
+    private void tampil(String cari, String tahun, int bulan, String jumlahData) {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            String URL = koneksi.HOST() + "/api/v1/bills?search="+cari+"&tahun="+tahun+"&bulan="+bulan;
+            String URL = koneksi.HOST() + "/api/v1/bills?search="+cari+"&tahun="+tahun+"&bulan="+bulan + "&per_page=" + jumlahData;
             System.out.println("Request ke: " + URL);
             
             // Ambil token dari Preferences
@@ -1106,6 +1264,13 @@ public class Tagihan extends javax.swing.JDialog {
                     String namalengkap = member.path("nama_lengkap").asText();
                     String tahunTagihan = member.path("tahun").asText();
                     String bulanTagihan = member.path("bulan").asText();
+                    
+                    updateTahunTagihan=tahunTagihan;
+                    updateBulanTagihan=bulanTagihan;
+                    
+                   TTahunTagihanDitemukan.setText(tahunTagihan);
+                   cmbBulanTagihanDitemukan.setSelectedItem(arrayBulan[Integer.parseInt(bulanTagihan)-1]);
+                    
                     
                     // Mengakses array bills
                     JsonNode billsArray = member.path("bills");
@@ -1183,11 +1348,12 @@ public class Tagihan extends javax.swing.JDialog {
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
     private widget.Button BtnCreateTagihan;
-    private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private widget.Button BtnTransferUnitKerja;
+    private widget.Button BtnUpdateTahun;
     private widget.CekBox ChkInput;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
@@ -1218,11 +1384,15 @@ public class Tagihan extends javax.swing.JDialog {
     private javax.swing.JTextField TTSukarela;
     private javax.swing.JTextField TTagihanTahun;
     private javax.swing.JTextField TTahun;
+    private javax.swing.JTextField TTahunTagihanDitemukan;
     private javax.swing.JTextField TUnitKerja;
     private javax.swing.JComboBox<String> cmbBulan;
+    private javax.swing.JComboBox<String> cmbBulanTagihanDitemukan;
+    private javax.swing.JComboBox<String> cmbCrJumlahdata;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel15;
+    private widget.Label jLabel16;
     private widget.Label jLabel4;
     private widget.Label jLabel6;
     private javax.swing.JPanel jPanel3;
@@ -1236,6 +1406,7 @@ public class Tagihan extends javax.swing.JDialog {
     private javax.swing.JLabel jnL16;
     private javax.swing.JLabel jnL17;
     private javax.swing.JLabel jnL18;
+    private javax.swing.JLabel jnL19;
     private javax.swing.JLabel jnL2;
     private javax.swing.JLabel jnL23;
     private javax.swing.JLabel jnL24;
