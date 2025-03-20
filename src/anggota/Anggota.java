@@ -69,7 +69,7 @@ public class Anggota extends javax.swing.JDialog {
         tbAnggota.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbAnggota.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 17; i++) {
             TableColumn column = tbAnggota.getColumnModel().getColumn(i);
             switch (i) {
                 case 0 -> {
@@ -99,6 +99,7 @@ public class Anggota extends javax.swing.JDialog {
                 case 14 -> column.setPreferredWidth(80);
                 case 15 -> column.setPreferredWidth(100);
                 case 16 -> column.setPreferredWidth(100);
+                case 17 -> column.setPreferredWidth(100);
                 default -> {
                 }
             }
@@ -221,6 +222,8 @@ public class Anggota extends javax.swing.JDialog {
         BtnCariUnitKerja = new widget.Button();
         jStatus = new widget.Label();
         CmbStatus = new javax.swing.JComboBox<>();
+        TSimpananPokok = new javax.swing.JTextField();
+        jStatus1 = new widget.Label();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -501,7 +504,7 @@ public class Anggota extends javax.swing.JDialog {
 
         jTK.setText("Tanggal Keluar :");
         FormInput.add(jTK);
-        jTK.setBounds(610, 70, 80, 23);
+        jTK.setBounds(620, 100, 80, 23);
 
         jUk.setText("Unit Kerja :");
         FormInput.add(jUk);
@@ -520,7 +523,7 @@ public class Anggota extends javax.swing.JDialog {
             }
         });
         FormInput.add(CmbJk);
-        CmbJk.setBounds(420, 130, 180, 23);
+        CmbJk.setBounds(110, 130, 170, 23);
         FormInput.add(TnL);
         TnL.setBounds(110, 10, 210, 23);
 
@@ -537,9 +540,10 @@ public class Anggota extends javax.swing.JDialog {
         TNik.setBounds(110, 40, 210, 23);
 
         jNip.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jNip.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jNip.setText("NIP :");
         FormInput.add(jNip);
-        jNip.setBounds(80, 130, 24, 23);
+        jNip.setBounds(350, 130, 30, 23);
         FormInput.add(TNoHp);
         TNoHp.setBounds(390, 10, 210, 23);
         FormInput.add(TEmail);
@@ -568,7 +572,7 @@ public class Anggota extends javax.swing.JDialog {
             }
         });
         FormInput.add(TNip);
-        TNip.setBounds(110, 130, 210, 23);
+        TNip.setBounds(390, 130, 210, 23);
 
         TAgama.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -580,27 +584,27 @@ public class Anggota extends javax.swing.JDialog {
 
         jJK.setText("Jenis Kelamin :");
         FormInput.add(jJK);
-        jJK.setBounds(340, 130, 70, 23);
+        jJK.setBounds(30, 130, 70, 23);
 
         tanggalKeluar.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
         FormInput.add(tanggalKeluar);
-        tanggalKeluar.setBounds(700, 70, 120, 23);
+        tanggalKeluar.setBounds(710, 100, 120, 23);
 
         jTL.setText("Tanggal Lahir :");
         FormInput.add(jTL);
-        jTL.setBounds(610, 10, 80, 23);
+        jTL.setBounds(620, 40, 80, 23);
 
         tanggalLahir.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
         FormInput.add(tanggalLahir);
-        tanggalLahir.setBounds(700, 10, 120, 23);
+        tanggalLahir.setBounds(710, 40, 120, 23);
 
         jTM.setText("Tanggal Masuk :");
         FormInput.add(jTM);
-        jTM.setBounds(610, 40, 80, 23);
+        jTM.setBounds(620, 70, 80, 23);
 
         tanggalMasuk.setBorder(new com.formdev.flatlaf.ui.FlatMenuItemBorder());
         FormInput.add(tanggalMasuk);
-        tanggalMasuk.setBounds(700, 40, 120, 23);
+        tanggalMasuk.setBounds(710, 70, 120, 23);
 
         jAlamat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         jAlamat.setText("Alamat :");
@@ -618,9 +622,9 @@ public class Anggota extends javax.swing.JDialog {
         FormInput.add(BtnCariUnitKerja);
         BtnCariUnitKerja.setBounds(290, 100, 28, 23);
 
-        jStatus.setText("Status :");
+        jStatus.setText("Simpanan Pokok :");
         FormInput.add(jStatus);
-        jStatus.setBounds(620, 100, 70, 23);
+        jStatus.setBounds(610, 10, 90, 23);
 
         CmbStatus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         CmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aktif", "Tidak Aktif" }));
@@ -631,7 +635,19 @@ public class Anggota extends javax.swing.JDialog {
             }
         });
         FormInput.add(CmbStatus);
-        CmbStatus.setBounds(700, 100, 120, 23);
+        CmbStatus.setBounds(710, 130, 120, 23);
+
+        TSimpananPokok.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TSimpananPokokActionPerformed(evt);
+            }
+        });
+        FormInput.add(TSimpananPokok);
+        TSimpananPokok.setBounds(710, 10, 210, 23);
+
+        jStatus1.setText("Status :");
+        FormInput.add(jStatus1);
+        jStatus1.setBounds(630, 130, 70, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -1002,6 +1018,10 @@ public class Anggota extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbCrStatusActionPerformed
 
+    private void TSimpananPokokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TSimpananPokokActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TSimpananPokokActionPerformed
+
     public void emptTeks() {
         CmbJk.setSelectedIndex(0);
         CmbStatus.setSelectedIndex(0);
@@ -1174,6 +1194,7 @@ public class Anggota extends javax.swing.JDialog {
     private javax.swing.JTextField TNik;
     private javax.swing.JTextField TNip;
     private javax.swing.JTextField TNoHp;
+    private javax.swing.JTextField TSimpananPokok;
     private javax.swing.JTextField TUk;
     private javax.swing.JTextField TnL;
     private javax.swing.JComboBox<String> cmbCrJk;
@@ -1196,6 +1217,7 @@ public class Anggota extends javax.swing.JDialog {
     private javax.swing.JLabel jNoHp;
     private javax.swing.JPanel jPanel3;
     private widget.Label jStatus;
+    private widget.Label jStatus1;
     private widget.Label jTK;
     private widget.Label jTL;
     private widget.Label jTM;

@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -811,78 +812,240 @@ public class Simpanan extends javax.swing.JDialog {
         LoadHTML.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         try {
            htmlContent = new StringBuilder();
-           htmlContent.append(                             
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Unit Kerja</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nomor Anggota</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nama Anggota</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Tahun</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Januari</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Februari</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Maret</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>April</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Mei</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juni</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juli</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Agustus</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>September</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Oktober</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>November</td>"+ 
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Desember</td>"+
-                "</tr>"+
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
-                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
-                "</tr>"
-            );
-           try {
-               this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//           htmlContent.append(                             
+//                "<tr class='isi'>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Unit Kerja</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nomor Anggota</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nama Anggota</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Tahun</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Januari</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Februari</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Maret</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>April</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Mei</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juni</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Juli</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Agustus</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>September</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Oktober</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>November</td>"+ 
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='4'>Desember</td>"+
+//                "</tr>"+
+//                "<tr class='isi'>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>"+
+//                    "<td valign='middle' bgcolor='#F7F7F7' align='center'>Dana Sosial</td>"+
+//                "</tr>"
+//            );
+                htmlContent.append("<tr class='isi'>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Unit Kerja</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nomor Anggota</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Nama Anggota</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' rowspan='2'>Tahun</td>");
+                
+                try {
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                     String URLs = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
+                     System.out.println("Request ke: " + URLs);
+
+                                 // Ambil token dari Preferences
+                     Preferences prefsColumn = Preferences.userRoot().node("myApp");
+                     String tokens = prefsColumn.get("auth_token", null);
+
+                     if (tokens == null) {
+                         System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                         return;
+                     }
+
+                     // Header
+                     HttpHeaders headersColumn = new HttpHeaders();
+                     headersColumn.setContentType(MediaType.APPLICATION_JSON);
+                     headersColumn.set("Accept", "application/json");
+                     headersColumn.set("Authorization", "Bearer " + tokens); 
+
+                     // Request menggunakan RestTemplate
+                     RestTemplate restTemplateColumn = new RestTemplate();
+                     HttpEntity<String> entityColumn = new HttpEntity<>(headersColumn);
+                     ResponseEntity<String> responseColumn = restTemplateColumn.exchange(URLs, HttpMethod.GET, entityColumn, String.class);
+
+                     // Parsing JSON ke dalam tabel
+                     ObjectMapper objectMapperColumn = new ObjectMapper();
+                     JsonNode rootNodeColumn = objectMapperColumn.readTree(responseColumn.getBody());
+
+                     System.out.println(rootNodeColumn);
+
+                    JsonNode firstDataElement = rootNodeColumn.path("data").get(0);
+
+                    // Ambil 'previous_years' dari elemen pertama
+                    JsonNode tahunSimpanan = firstDataElement.path("previous_years");
+                    if (tahunSimpanan.isArray()) {
+                        // Langsung looping previous_years pada elemen pertama
+                        for (JsonNode saving : tahunSimpanan) {
+                            String tahunPreviousYear = saving.path("tahun").asText("-");
+                            // Menambahkan kolom ke dalam HTML table untuk setiap tahun
+                            htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='5'>").append(tahunPreviousYear).append("</td>");
+                        }
+                    }
+                } catch (JsonProcessingException | RestClientException e) {
+                    System.out.println(e);
+                }
+                
+                
+                htmlContent
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Januari</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Februari</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Maret</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>April</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Mei</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Juni</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Juli</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Agustus</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>September</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Oktober</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>November</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center' colspan='3'>Desember</td>");
+                htmlContent.append("</tr>");
+                        
+                htmlContent.append("<tr class='isi'>");   
+                    try {
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                         String URLs = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
+                         System.out.println("Request ke: " + URLs);
+
+                                     // Ambil token dari Preferences
+                         Preferences prefsColumn = Preferences.userRoot().node("myApp");
+                         String tokens = prefsColumn.get("auth_token", null);
+
+                         if (tokens == null) {
+                             System.out.println("Token tidak ditemukan! Harap login terlebih dahulu.");
+                             return;
+                         }
+
+                         // Header
+                         HttpHeaders headersColumn = new HttpHeaders();
+                         headersColumn.setContentType(MediaType.APPLICATION_JSON);
+                         headersColumn.set("Accept", "application/json");
+                         headersColumn.set("Authorization", "Bearer " + tokens); 
+
+                         // Request menggunakan RestTemplate
+                         RestTemplate restTemplateColumn = new RestTemplate();
+                         HttpEntity<String> entityColumn = new HttpEntity<>(headersColumn);
+                         ResponseEntity<String> responseColumn = restTemplateColumn.exchange(URLs, HttpMethod.GET, entityColumn, String.class);
+
+                         // Parsing JSON ke dalam tabel
+                         ObjectMapper objectMapperColumn = new ObjectMapper();
+                         JsonNode rootNodeColumn = objectMapperColumn.readTree(responseColumn.getBody());
+
+                         System.out.println(rootNodeColumn);
+
+                        JsonNode firstDataElement = rootNodeColumn.path("data").get(0);
+
+                        // Ambil 'previous_years' dari elemen pertama
+                        JsonNode tahunSimpanan = firstDataElement.path("previous_years");
+                        if (tahunSimpanan.isArray()) {
+                            // Langsung looping previous_years pada elemen pertama
+                            for (JsonNode saving : tahunSimpanan) {
+                                String pokok = saving.path("total_pokok").asText("-");
+                                String wajib = saving.path("total_wajib").asText("-");
+                                String sukarela = saving.path("total_sukarela").asText("-");
+                                String simpanan = saving.path("total_savings").asText("-");
+                                String akumulasisimpanan = saving.path("accumulated_savings").asText("-");
+                                // Menambahkan kolom ke dalam HTML table untuk setiap tahun
+                                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>").append(pokok).append("</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>").append(wajib).append("</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>").append(sukarela).append("</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>").append(simpanan).append("</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>").append(akumulasisimpanan).append("</td>");
+                            }
+                        }
+                    } catch (JsonProcessingException | RestClientException e) {
+                        System.out.println(e);
+                    }
+                htmlContent.append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Pokok</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Wajib</td>")
+                    .append("<td valign='middle' bgcolor='#F7F7F7' align='center'>Sukarela</td>")
+                    .append("</tr>");
+
+            try {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 String URL = koneksi.HOST() + "/api/v1/savings?tahun=" + tahun + "&per_page=" + jumlahData + "&search=" + cari;
                 System.out.println("Request ke: " + URL);
 
@@ -921,6 +1084,7 @@ public class Simpanan extends javax.swing.JDialog {
                     String namalengkap = member.path("nama_lengkap").asText();
                     String tahunSimpanan = member.path("tahun").asText();
                     JsonNode dataSimpanan = member.path("savings");
+                    JsonNode previousSimpanan = member.path("previous_years");
                     TTahun.setText(tahunSimpanan);
                     updateTahunSimpanan=tahunSimpanan;
                     // Mulai baris tabel
@@ -929,6 +1093,35 @@ public class Simpanan extends javax.swing.JDialog {
                         .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(nomoranggota).append("</td>")
                         .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(namalengkap).append("</td>")
                         .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>").append(tahunSimpanan).append("</td>");
+                    
+                    if (previousSimpanan.isArray()) {
+                        for (JsonNode saving : previousSimpanan) {
+                            String pokok = saving.path("total_pokok").asText("-");
+                            String wajib = saving.path("total_wajib").asText("-");
+                            String sukarela = saving.path("total_sukarela").asText("-");
+                            String simpanan = saving.path("total_savings").asText("-");
+                            String akumulasisimpanan = saving.path("accumulated_savings").asText("-");
+                            
+                            DecimalFormat df = new DecimalFormat("0.##"); // Format tanpa angka nol setelah desimal
+
+                            htmlContent
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((pokok != null && pokok.equals("0.00")) ? "" : (pokok != null ? df.format(Double.parseDouble(pokok)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((wajib != null && wajib.equals("0.00")) ? "" : (wajib != null ? df.format(Double.parseDouble(wajib)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((sukarela != null && sukarela.equals("0.00")) ? "" : (sukarela != null ? df.format(Double.parseDouble(sukarela)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((simpanan != null && simpanan.equals("0.00")) ? "" : (simpanan != null ? df.format(Double.parseDouble(simpanan)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((akumulasisimpanan != null && akumulasisimpanan.equals("0.00")) ? "" : (akumulasisimpanan != null ? df.format(Double.parseDouble(akumulasisimpanan)) : "-"))
+                                .append("</td>");
+                        }
+                    }
 
                     // Loop untuk menambahkan kolom savings jika ada
                     if (dataSimpanan.isArray()) {
@@ -936,21 +1129,19 @@ public class Simpanan extends javax.swing.JDialog {
                             String pokok = saving.path("pokok").asText("-");
                             String wajib = saving.path("wajib").asText("-");
                             String sukarela = saving.path("sukarela").asText("-");
-                            String danaSosial = saving.path("dana_sosial").asText("-");
+                            
+                            DecimalFormat df = new DecimalFormat("0.##"); // Format tanpa angka nol setelah desimal
 
                             htmlContent
-                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
-                                    .append((pokok != null && pokok.equals("0.00")) ? "" : (pokok != null ? pokok : "-"))
-                                    .append("</td>")
-                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
-                                    .append((wajib != null && wajib.equals("0.00")) ? "" : (wajib != null ? wajib : "-"))
-                                    .append("</td>")
-                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
-                                    .append((sukarela != null && sukarela.equals("0.00")) ? "" : (sukarela != null ? sukarela : "-"))
-                                    .append("</td>")
-                                    .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
-                                    .append((danaSosial != null && danaSosial.equals("0.00")) ? "" : (danaSosial != null ? danaSosial : "-"))
-                                    .append("</td>");
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((pokok != null && pokok.equals("0.00")) ? "" : (pokok != null ? df.format(Double.parseDouble(pokok)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((wajib != null && wajib.equals("0.00")) ? "" : (wajib != null ? df.format(Double.parseDouble(wajib)) : "-"))
+                                .append("</td>")
+                                .append("<td valign='middle' bgcolor='#FFFFFF' align='center'>")
+                                .append((sukarela != null && sukarela.equals("0.00")) ? "" : (sukarela != null ? df.format(Double.parseDouble(sukarela)) : "-"))
+                                .append("</td>");
                         }
                     }
 
@@ -972,7 +1163,7 @@ public class Simpanan extends javax.swing.JDialog {
                     "</style>"+
                   "</head>"+
                   "<body>"+
-                    "<table align='center' class='tbl_form'>"+
+                    "<table class='tbl_form'>"+
                       htmlContent.toString()+
                     "</table>"+
                   "</body>"+
